@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#10172b">
-<title>神のお告げ | PROTO 02.2</title>
+<title>神のお告げ | PROTO 02.3</title>
 <style>
 :root{color-scheme:dark;--bg:#0a1020;--panel:#151f36;--ink:#eaf3ff;--muted:#adc0df;--gold:#ffd17a;--accent:#76e3ee;--edge:#3c5274}
 *{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;min-width:290px;background:radial-gradient(ellipse at 40% -10%,#233c64 0%,var(--bg) 62%);color:var(--ink);font-family:system-ui,-apple-system,"Hiragino Kaku Gothic ProN","Yu Gothic",sans-serif}
@@ -20,13 +20,13 @@ button,select{font:inherit}button{border:1px solid #59759c;background:#2a4264;co
 </head>
 <body>
 <div class="wrap">
-  <header class="heading"><div><div class="eyebrow">ORIGINAL / ROGUELIKE PUZZLE</div><h1>神のお告げ <span>PROTO 02.2</span></h1></div><div class="tag">神様は気まぐれだ www</div></header>
+  <header class="heading"><div><div class="eyebrow">ORIGINAL / ROGUELIKE PUZZLE</div><h1>神のお告げ <span>PROTO 02.3</span></h1></div><div class="tag">神様は気まぐれだ www</div></header>
   <div class="layout">
     <main class="main">
       <div class="stats-top" aria-label="ゲーム情報"><div class="mini"><small>SCORE</small><strong id="miniScore">0</strong></div><div class="mini"><small>LEVEL</small><strong id="miniLevel">1</strong></div><div class="mini"><small>LINES</small><strong id="miniLines">0</strong></div><div class="mini"><small>ANGLE</small><strong id="miniAngle">0°</strong></div></div>
       <div class="stage">
         <canvas id="game" width="540" height="540" aria-label="落ちものパズルの盤面"></canvas>
-        <div class="overlay" id="overlay" role="dialog" aria-modal="true" aria-labelledby="modalTitle"><div class="dialog"><h2 id="modalTitle">神のお告げ</h2><p id="modalBody">神様の気まぐれで盤面が傾く、落ちものパズル。<br>ラインを揃えて消し、レベルアップで強化を選ぼう！<br>今回は見切れ対策＆回転の調整済み。</p><div class="choice-list" id="choices"><button class="primary" id="start">ゲーム開始</button></div></div></div>
+        <div class="overlay" id="overlay" role="dialog" aria-modal="true" aria-labelledby="modalTitle"><div class="dialog"><h2 id="modalTitle">神のお告げ</h2><p id="modalBody">神様の気まぐれで盤面が傾く、落ちものパズル。<br>ラインを揃えて消し、レベルアップで強化を選ぼう！<br>着地後の操作猶予と、レベルごとに増す神の回転を搭載。</p><div class="choice-list" id="choices"><button class="primary" id="start">ゲーム開始</button></div></div></div>
       </div>
       <div class="controls" aria-label="ゲーム操作">
         <button id="left" aria-label="左へ移動">◀</button><button id="turn" aria-label="ブロックを回す">⟳</button><button id="right" aria-label="右へ移動">▶</button><button class="primary" id="drop" aria-label="即落下">⤓</button>
@@ -37,11 +37,11 @@ button,select{font:inherit}button{border:1px solid #59759c;background:#2a4264;co
     <aside class="side">
       <section class="panel mainstats"><div class="stat"><label>SCORE</label><b id="score">0</b></div><div class="stat"><label>LEVEL</label><b id="level">1</b></div><div class="stat"><label>LINES</label><b id="lines">0</b></div><div class="stat"><label>角度</label><b id="angle">0°</b></div><div class="stat"><label>BEST</label><b id="best">0</b></div></section>
       <section class="panel"><div class="nextrow"><canvas id="next" width="90" height="90" aria-label="次のブロック"></canvas><div><strong>NEXT</strong><p class="small" style="margin:3px 0">次の駒</p></div></div><div class="notice" id="message" aria-live="polite">神様は気まぐれ。</div></section>
-      <section class="panel config"><h3>回転の強さ</h3><label class="small" for="difficulty">レベル上昇で回転角度が広がる</label><select id="difficulty"><option value="mild">やさしい（最大15°）</option><option value="normal" selected>標準（最大30°）</option><option value="wild">神の暴走（最大45°）</option></select><p class="small" id="progress">次のレベルまで 500 点</p><p class="small" id="angleCap">現在の最大回転角度 ±15°</p><p class="small">お告げ防御はボタンで予約し次の回転を防ぐ。強化では盤面消去・防御3回・落下速度半減などを選べる。</p></section>
-      <section class="panel howto"><h3>遊び方</h3><p class="small">ブロックを横一列に揃えて消そう。着地後1.1秒は移動・回転できる（最大10回の猶予回復）。盤面下に残り時間ゲージを表示。即落下はその場で固定。レベルアップ時は3つの強化から1つを選べる。神のお告げで盤面が傾くが、落下と操作は盤面のマス目基準。</p><button class="secondary" id="pause">一時停止 / 再開</button></section>
+      <section class="panel config"><h3>回転の強さ</h3><label class="small" for="difficulty">レベル上昇で回転角度が広がる</label><select id="difficulty"><option value="mild">やさしい（最大30°）</option><option value="normal" selected>標準（最大60°）</option><option value="wild">神の暴走（最大90°）</option></select><p class="small" id="progress">次のレベルまで 500 点</p><p class="small" id="angleCap">現在の最大回転角度 ±15°</p><p class="small">お告げ防御はボタンで予約し次の回転を防ぐ。強化では盤面消去・防御3回・落下速度半減などを選べる。</p></section>
+      <section class="panel howto"><h3>遊び方</h3><p class="small">ブロックを横一列に揃えて消そう。着地後1.1秒は移動・回転できる（最大10回の猶予回復）。即落下はその場で即固定。レベルアップ時は3つの強化から1つを選べる。神のお告げで盤面が傾くが、落下と操作は盤面のマス目基準。</p><button class="secondary" id="pause">一時停止 / 再開</button></section>
     </aside>
   </div>
-  <p class="footer">© 神のお告げ / 生主ルパン × ChatGPT・オリジナル試作。PROTO 02.2。ブラウザで動作。iPhoneの「ファイル」プレビューなど、JavaScriptが動かないビューアでは遊べません。Safari・Chrome・Edgeなどで開いてください。</p>
+  <p class="footer">© 神のお告げ / 生主ルパン × ChatGPT・オリジナル試作。PROTO 02.3。ブラウザで動作。iPhoneの「ファイル」プレビューなど、JavaScriptが動かないビューアでは遊べません。Safari・Chrome・Edgeなどで開いてください。</p>
 </div>
 <script>
 (()=>{
@@ -55,7 +55,7 @@ button,select{font:inherit}button{border:1px solid #59759c;background:#2a4264;co
  let phase='intro',angle=0,targetAngle=0,fallMs=680,soft=false,acc=0,last=0,noticeUntil=0,nextOmenScore=320,best=0;
  const LOCK_DELAY=1100,MAX_LOCK_RESETS=10;let groundedMs=0,lockResets=0,wasGrounded=false,slowPieces=0;
  try{best=Number(localStorage.getItem(storageKey))||0}catch(e){}
- const maxAngle=()=>{const mode=$('difficulty').value;const cap=({mild:15,normal:30,wild:45}[mode]||30);const first=({mild:8,normal:15,wild:20}[mode]||15);return Math.min(cap,first+Math.floor((level-1)/2)*5)};
+ const maxAngle=()=>{const mode=$('difficulty').value;const cap=({mild:30,normal:60,wild:90}[mode]||60);const first=({mild:10,normal:15,wild:20}[mode]||15);return Math.min(cap,first+Math.floor((level-1)/2)*10)};
  function empty(){return Array.from({length:H},()=>Array(W).fill(-1))}
  function rand(n){return Math.floor(Math.random()*n)}
  function randomPiece(){return{shape:shapes[rand(shapes.length)].map(a=>a.slice()),color:rand(colors.length),x:3,y:-1}}
@@ -113,7 +113,6 @@ button,select{font:inherit}button{border:1px solid #59759c;background:#2a4264;co
  for(let j=0;j<piece.shape.length;j++)for(let i=0;i<piece.shape[j].length;i++)if(piece.shape[j][i]){if(ghostY+j>=0)drawCell(ctx,piece.color,(piece.x+i)*S,(ghostY+j)*S,S,.22);if(piece.y+j>=0)drawCell(ctx,piece.color,(piece.x+i)*S,(piece.y+j)*S,S)}}
  ctx.fillStyle='#ffda87';ctx.fillRect(W*S/2-17,-12,34,6);ctx.fillStyle='#f7d68a';ctx.textAlign='center';ctx.font='bold 13px system-ui';ctx.fillText('入口',W*S/2,-19);ctx.restore();
  ctx.fillStyle='#eff7ff';ctx.font='bold 13px system-ui';ctx.textAlign='left';ctx.fillText(`神の角度 ${Math.round(angle)>0?'+':''}${Math.round(angle)}°`,16,22);
- if(isPlaying()&&piece&&wasGrounded){const left=Math.max(0,1-groundedMs/LOCK_DELAY);ctx.fillStyle='#122c42';ctx.fillRect(168,504,204,9);ctx.fillStyle=left<.35?'#ff9e7b':'#7be5c4';ctx.fillRect(170,506,200*left,5)}
  if(armed){ctx.fillStyle='#93f4c5';ctx.font='bold 13px system-ui';ctx.textAlign='center';ctx.fillText('🛡 次のお告げを防御',270,524)}
  if(isPlaying()&&piece){acc+=dt;const gravity=slowPieces>0?fallMs*2:fallMs;const interval=soft?Math.max(35,gravity/11):gravity;if(acc>=interval){acc=0;move(0,1)}
  // First ground contact starts a grace period; movement/rotation can refresh it up to a limit.
