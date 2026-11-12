@@ -1,0 +1,154 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#91c8ff">
+<title>神のお告げ | PROTO 03.1 CLOUD LAB</title>
+<style>
+:root{color-scheme:light;--bg:#dff1ff;--panel:#f6fbff;--ink:#214267;--muted:#577a9f;--gold:#f7c86a;--accent:#67bfff;--edge:#a9d5fb;--shadow:#79a8d733}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;min-width:290px;background:linear-gradient(180deg,#bfe2ff 0%,#e7f6ff 42%,#f7fbff 100%);color:var(--ink);font-family:system-ui,-apple-system,"Hiragino Kaku Gothic ProN","Yu Gothic",sans-serif}
+button,select{font:inherit}button{border:1px solid #86b8e8;background:#e9f5ff;color:#23456a;border-radius:14px;font-weight:800;min-height:48px;padding:10px 14px;cursor:pointer;touch-action:manipulation;user-select:none;-webkit-user-select:none;box-shadow:0 4px 14px #76a9d01c}button:hover{background:#f3faff}button:focus-visible,select:focus-visible{outline:3px solid var(--accent);outline-offset:3px}button:active{filter:brightness(0.98)}button.primary{background:linear-gradient(145deg,#ffe6a5,#f4c56a);color:#5a410a;border-color:#f7d27d}button.secondary{background:#e9f3ff}.wrap{max-width:1080px;padding:16px;margin:auto}.heading{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}.eyebrow{font-size:11px;letter-spacing:2.8px;font-weight:800;color:#9b7d37}h1{font-size:clamp(24px,4.5vw,37px);margin:4px 0}h1 span{font-size:13px;color:#6797bf;letter-spacing:1px}.tag{font-size:12px;color:var(--muted);border:1px solid var(--edge);background:#ffffffa8;border-radius:30px;padding:8px 11px}
+.layout{display:grid;grid-template-columns:minmax(0,1fr) 286px;gap:14px;margin-top:12px}.main{min-width:0}.stats-top{display:none}.stage{position:relative;max-width:620px;margin:0 auto;overflow:hidden;border:1px solid #a9d5fb;border-radius:22px;background:linear-gradient(180deg,#7fc4ff 0%,#bce5ff 55%,#eaf7ff 100%);box-shadow:0 18px 50px #6ca5cf26}.stage::before,.stage::after{content:"";position:absolute;border-radius:999px;background:#ffffff80;filter:blur(1px)}.stage::before{width:110px;height:38px;left:18px;top:18px}.stage::after{width:88px;height:32px;right:26px;top:48px}.stage canvas{display:block;width:100%;aspect-ratio:1/1;height:auto;touch-action:none}
+.overlay{position:absolute;inset:0;z-index:5;background:#d8f0ffdd;display:flex;align-items:center;justify-content:center;padding:10px}.overlay.hidden{display:none}.dialog{width:min(100%,420px);max-height:100%;overflow:auto;border-radius:20px;background:linear-gradient(180deg,#ffffff,#eef8ff);border:1px solid #b8daf6;box-shadow:0 15px 60px #7aa6cf33;padding:clamp(12px,3vw,24px);text-align:center}.dialog h2{font-size:clamp(19px,4.6vw,25px);margin:0 0 10px}.dialog p{font-size:clamp(12px,2.6vw,14px);line-height:1.7;margin:8px 0;color:#496b8e}.choice-list{display:grid;gap:8px;margin-top:12px}.choice-list button{width:100%;text-align:left;padding:10px 14px;font-size:14px}.choice-list small{font-weight:500;display:block;color:#6789ab;font-size:11px;margin-top:4px}
+.controls{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin-top:9px}.controls button{min-height:58px;font-size:24px;padding:6px}.controls .wide{grid-column:span 2;font-size:14px}.controls .shield{background:#eff8ff}.controls .on{box-shadow:inset 0 0 0 2px #f5cc72}.controls button:disabled{opacity:.55;cursor:not-allowed}.help{font-size:12px;color:var(--muted);text-align:center;margin:8px 0 0;line-height:1.6}
+.side{display:flex;flex-direction:column;gap:12px}.panel{background:#ffffffcc;border:1px solid var(--edge);border-radius:18px;padding:14px;box-shadow:0 10px 28px #7fb4d01a}.stat{display:flex;justify-content:space-between;gap:8px;align-items:center;padding:5px 0}.stat b{font-size:22px;font-variant-numeric:tabular-nums}.stat label{font-size:12px;color:var(--muted)}.notice{color:#92732d;font-size:14px;font-weight:750;min-height:36px;margin:9px 0 0}.nextrow{display:flex;align-items:center;gap:12px}.nextrow canvas{background:linear-gradient(180deg,#b4e0ff,#edf9ff);border:1px solid var(--edge);border-radius:12px}.small{font-size:12px;color:var(--muted);line-height:1.7}.panel h3{margin:0 0 8px;font-size:15px}select{background:#fff;border:1px solid #add2f1;color:#295277;border-radius:11px;padding:9px;width:100%;margin-top:5px;min-height:42px}#pause{width:100%;margin-top:10px}.footer{font-size:11px;color:#6b8caf;line-height:1.7;margin-top:12px}
+@media(max-width:760px){.wrap{padding:8px}.heading{padding:3px 4px}.tag{display:none}.layout{grid-template-columns:1fr;gap:9px;margin-top:7px}.stats-top{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:7px}.mini{background:#f5fbff;border:1px solid #c4e3fb;border-radius:11px;padding:6px 2px;text-align:center}.mini small{display:block;color:var(--muted);font-size:9px}.mini strong{display:block;font-size:16px}.stage{max-width:min(100%,470px)}.side{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.panel{padding:10px}.panel.config,.panel.howto{grid-column:span 2}.side .mainstats{display:none}.controls{position:sticky;bottom:max(4px,env(safe-area-inset-bottom));z-index:4;padding:7px;background:#f4fbffef;border:1px solid #c0e0fb;border-radius:16px;box-shadow:0 6px 30px #8db6d333;max-width:470px;margin:7px auto 0}.controls button{min-height:49px}.controls .wide{min-height:42px}.help{font-size:11px;margin-top:4px}.dialog{max-width:340px}.footer{margin-top:14px}h1{font-size:24px}}
+@media(max-width:350px){.controls{gap:5px}.controls button{min-height:44px}.wrap{padding:5px}.dialog{padding:10px}.choice-list{gap:5px}}
+@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="heading"><div><div class="eyebrow">ORIGINAL / CLOUD ROTATION PUZZLE</div><h1>神のお告げ <span>PROTO 03.1 CLOUD LAB</span></h1></div><div class="tag">雲の世界でも神様は気まぐれだ www</div></header>
+  <div class="layout">
+    <main class="main">
+      <div class="stats-top" aria-label="ゲーム情報"><div class="mini"><small>SCORE</small><strong id="miniScore">0</strong></div><div class="mini"><small>LEVEL</small><strong id="miniLevel">1</strong></div><div class="mini"><small>LINES</small><strong id="miniLines">0</strong></div><div class="mini"><small>ANGLE</small><strong id="miniAngle">0°</strong></div></div>
+      <div class="stage">
+        <canvas id="game" width="540" height="540" aria-label="落ちものパズルの盤面"></canvas>
+        <div class="overlay" id="overlay" role="dialog" aria-modal="true" aria-labelledby="modalTitle"><div class="dialog"><h2 id="modalTitle">神のお告げ</h2><p id="modalBody">雲の塊を積み上げる、神様の気まぐれパズル。<br>ラインを揃えて消し、レベルアップで強化を選ぼう！<br>回転システムはそのまま、見た目を雲の世界へ改修した試験版。</p><div class="choice-list" id="choices"><button class="primary" id="start">ゲーム開始</button></div></div></div>
+      </div>
+      <div class="controls" aria-label="ゲーム操作">
+        <button id="left" aria-label="左へ移動">◀</button><button id="turn" aria-label="雲を回す">⟳</button><button id="right" aria-label="右へ移動">▶</button><button class="primary" id="drop" aria-label="即落下">⤓</button>
+        <button class="wide" id="down" aria-label="押している間は加速">▼ 押して加速</button><button class="wide shield" id="item" aria-label="神のお告げ防御">🛡 お告げ防御 <span id="shields">0</span></button>
+      </div>
+      <p class="help">PC：← → 移動 / ↑ 回転 / ↓ 加速 / Space 即落下 / X 防御 / P 一時停止</p>
+    </main>
+    <aside class="side">
+      <section class="panel mainstats"><div class="stat"><label>SCORE</label><b id="score">0</b></div><div class="stat"><label>LEVEL</label><b id="level">1</b></div><div class="stat"><label>LINES</label><b id="lines">0</b></div><div class="stat"><label>角度</label><b id="angle">0°</b></div><div class="stat"><label>BEST</label><b id="best">0</b></div></section>
+      <section class="panel"><div class="nextrow"><canvas id="next" width="90" height="90" aria-label="次の雲"></canvas><div><strong>NEXT</strong><p class="small" style="margin:3px 0">次の雲塊</p></div></div><div class="notice" id="message" aria-live="polite">神様は気まぐれ。</div></section>
+      <section class="panel config"><h3>回転の強さ</h3><label class="small" for="difficulty">レベル上昇で回転角度が広がる</label><select id="difficulty"><option value="mild">やさしい（最大30°）</option><option value="normal" selected>標準（最大60°）</option><option value="wild">神の暴走（最大90°）</option></select><p class="small" id="progress">次のレベルまで 500 点</p><p class="small" id="angleCap">現在の最大回転角度 ±15°</p><p class="small" id="omenStatus" aria-live="polite">神のお告げ：待機中</p><button id="rageTest" class="secondary" style="width:100%;margin-top:6px">⚡ 神の逆鱗を試す（テスト）</button><button id="spinTest" class="secondary" style="width:100%;margin-top:6px">🌀 360°回転テスト</button><p class="small">お告げ防御は次の回転を1回防ぐ。雲は1マスずつでも、くっつくと塊に見えるよう描画している。</p></section>
+      <section class="panel howto"><h3>遊び方</h3><p class="small">雲を横一列に揃えて消そう。着地後1.1秒は移動・回転できる（最大10回の猶予回復）。即落下は即固定。盤面は一定時間で正面へ戻り、神の逆鱗中は1個固定するごとに角度が変わる。</p><button class="secondary" id="pause">一時停止 / 再開</button></section>
+    </aside>
+  </div>
+  <p class="footer">© 神のお告げ / 生主ルパン × ChatGPT・オリジナル試作。PROTO 03.1 CLOUD LAB。ブラウザで動作。Safari・Chrome・Edgeなどで開いてください。</p>
+</div>
+<script>
+(()=>{
+ 'use strict';
+ const W=10,H=16,S=25,CW=540,$=(id)=>document.getElementById(id);
+ const canvas=$('game'),ctx=canvas.getContext('2d'),nextCtx=$('next').getContext('2d');
+ const colors=[
+  {fill:'#ffffff',shade:'#d8efff',accent:'#f5fbff'},
+  {fill:'#ffe8b0',shade:'#ffd785',accent:'#fff3d1'},
+  {fill:'#eadbff',shade:'#cdb5ff',accent:'#f5edff'},
+  {fill:'#dff7eb',shade:'#a9e6c9',accent:'#f1fff7'},
+  {fill:'#ffdce6',shade:'#ffb5cb',accent:'#fff1f5'},
+  {fill:'#ffe4d1',shade:'#ffc39a',accent:'#fff2e8'},
+  {fill:'#dbebff',shade:'#a8c9ff',accent:'#eef5ff'}
+ ];
+ const shapes=[[[1,1,1,1]],[[1,1],[1,1]],[[0,1,0],[1,1,1]],[[1,0,0],[1,1,1]],[[0,0,1],[1,1,1]],[[1,1,0],[0,1,1]],[[0,1,1],[1,1,0]]];
+ const storageKey='kami-no-otsuge-proto03-cloud-best';
+ let board=empty(),piece=null,next=null,score=0,level=1,lines=0,shield=0,armed=false;
+ let phase='intro',angle=0,targetAngle=0,fallMs=680,soft=false,acc=0,last=0,noticeUntil=0,nextOmenScore=320,best=0;
+ const LOCK_DELAY=1100,MAX_LOCK_RESETS=10,OMEN_DURATION=9000,RAGE_PIECES=4;
+ let groundedMs=0,lockResets=0,wasGrounded=false,slowPieces=0;
+ let omenState='idle',omenRemaining=0,ragePieces=0,omenCount=0,fullSpin=false,clearFx=null;
+ try{best=Number(localStorage.getItem(storageKey))||0}catch(e){}
+ const maxAngle=()=>{const mode=$('difficulty').value;const cap=({mild:30,normal:60,wild:90}[mode]||60);const first=({mild:10,normal:15,wild:20}[mode]||15);return Math.min(cap,first+Math.floor((level-1)/2)*10)};
+ function empty(){return Array.from({length:H},()=>Array(W).fill(-1))}
+ function rand(n){return Math.floor(Math.random()*n)}
+ function randomPiece(){return{shape:shapes[rand(shapes.length)].map(a=>a.slice()),color:rand(colors.length),x:3,y:-1}}
+ function fits(sh,x,y){for(let j=0;j<sh.length;j++)for(let i=0;i<sh[j].length;i++)if(sh[j][i]){const xx=x+i,yy=y+j;if(xx<0||xx>=W||yy>=H||(yy>=0&&board[yy][xx]!==-1))return false}return true}
+ function isPlaying(){return phase==='playing'}
+ function update(){for(const [id,val] of Object.entries({score:score.toLocaleString(),level,lines,angle:`${Math.round(angle)}°`,miniScore:score.toLocaleString(),miniLevel:level,miniLines:lines,miniAngle:`${Math.round(angle)}°`,best:best.toLocaleString()})){if($(id))$(id).textContent=val}
+ $('shields').textContent=shield+(armed?' ✓':'');$('item').classList.toggle('on',armed);$('progress').textContent=`次のレベルまで ${Math.max(0,level*500-score)} 点`; $('angleCap').textContent=`現在の最大回転角度 ±${maxAngle()}°（Lv.${level}）`;}
+ function note(t){$('message').textContent=t;noticeUntil=performance.now()+3200}
+ function setStatus(t){$('omenStatus').textContent=t}
+ function normalizeDegrees(a){return ((a+180)%360+360)%360-180}
+ function setRotation(deg,extraTurn=0){const current=normalizeDegrees(angle);const destination=normalizeDegrees(deg);let delta=destination-current;if(delta>180)delta-=360;if(delta<-180)delta+=360;targetAngle=angle+delta+extraTurn*360;fullSpin=extraTurn!==0}
+ function beginReturn(){omenState='returning';omenRemaining=0;ragePieces=0;setRotation(0);setStatus('神のお告げ：帰還中');note('☁ 盤面が正面へ戻る…')}
+ function tickOmen(dt){if(!isPlaying())return;if(omenState==='active'){omenRemaining=Math.max(0,omenRemaining-dt);setStatus(`神のお告げ：残り ${Math.ceil(omenRemaining/1000)}秒`);if(omenRemaining<=0)beginReturn()}else if(omenState==='returning'){if(Math.abs(normalizeDegrees(targetAngle)-normalizeDegrees(angle))<1&&Math.abs(normalizeDegrees(angle))<1){angle=0;targetAngle=0;omenState='idle';fullSpin=false;setStatus('神のお告げ：待機中')}}else if(omenState==='rage'){setStatus(`⚡ 神の逆鱗：あと${Math.max(0,ragePieces)}個`)}else setStatus('神のお告げ：待機中')}
+ function showDialog(title,html,choices){phase=title==='GAME OVER'?'over':title==='一時停止'?'paused':title.startsWith('LEVEL')?'choice':'intro';soft=false;acc=0;$('modalTitle').textContent=title;$('modalBody').innerHTML=html;$('choices').replaceChildren();for(const c of choices){const b=document.createElement('button');b.className=c.primary?'primary':'';b.textContent=c.title;if(c.desc){const small=document.createElement('small');small.textContent=c.desc;b.append(small)}b.addEventListener('click',c.fn);$('choices').append(b)}$('overlay').classList.remove('hidden')}
+ function resume(){phase='playing';acc=0;last=performance.now();$('overlay').classList.add('hidden');update()}
+ function start(){board=empty();score=0;level=1;lines=0;shield=0;armed=false;soft=false;angle=0;targetAngle=0;fallMs=680;next=null;nextOmenScore=320+rand(150);piece=null;groundedMs=0;lockResets=0;wasGrounded=false;slowPieces=0;omenState='idle';omenRemaining=0;ragePieces=0;omenCount=0;fullSpin=false;clearFx=null;setStatus('神のお告げ：待機中');spawn();update();note('ゲーム開始！ 雲の世界でも神様は気まぐれだ www');resume()}
+ function spawn(){groundedMs=0;lockResets=0;wasGrounded=false;piece=next||randomPiece();next=randomPiece();piece.x=Math.floor((W-piece.shape[0].length)/2);piece.y=-1;drawNext();if(!fits(piece.shape,piece.x,piece.y))endGame()}
+ function endGame(){if(score>best){best=score;try{localStorage.setItem(storageKey,String(best))}catch(e){}}update();showDialog('GAME OVER',`スコア <b>${score.toLocaleString()}</b> ／ ベスト <b>${best.toLocaleString()}</b><br>レベル ${level} ／ 消去 ${lines} 列<br><br>雲の遊戯はここまでだ www`,[{title:'もう一度挑戦する',primary:true,fn:start}])}
+ function rotate(sh){return sh[0].map((_,i)=>sh.map(r=>r[i]).reverse())}
+ function afterAdjustment(){if(!piece)return;if(fits(piece.shape,piece.x,piece.y+1)){groundedMs=0;wasGrounded=false}else if(wasGrounded&&lockResets<MAX_LOCK_RESETS){groundedMs=0;lockResets++}}
+ function rotatePiece(){if(!isPlaying()||!piece)return;const r=rotate(piece.shape);for(const dx of [0,-1,1,-2,2])if(fits(r,piece.x+dx,piece.y)){piece.shape=r;piece.x+=dx;afterAdjustment();return}}
+ function move(dx,dy){if(!isPlaying()||!piece)return false;if(fits(piece.shape,piece.x+dx,piece.y+dy)){piece.x+=dx;piece.y+=dy;if(dx!==0)afterAdjustment();return true}return false}
+ function clearBottom(rows){const n=Math.min(rows,H);board.splice(H-n,n);for(let i=0;i<n;i++)board.unshift(Array(W).fill(-1));note(`✨ 下から${n}段の雲を消去！`)}
+ function spin(){const max=maxAngle();let n=rand(max*2+1)-max;if(Math.abs(n)<10)n=n<0?-Math.min(15,max):Math.min(15,max);omenState='active';omenRemaining=OMEN_DURATION;setRotation(n);setStatus('神のお告げ：発動中');note(`⚡ 神のお告げ！ 盤面 ${n>0?'+':''}${n}°`)}
+ function rageRotate(){const options=[-180,-135,-90,-60,60,90,135,180];let n=options[rand(options.length)];if(Math.abs(normalizeDegrees(targetAngle)-normalizeDegrees(n))<15)n=-n;setRotation(n);note(`⚡ 神の逆鱗！ ${n}°へドーン！`)}
+ function beginRage(){if(!isPlaying())return;omenState='rage';ragePieces=RAGE_PIECES;omenRemaining=0;rageRotate();setStatus(`⚡ 神の逆鱗：あと${ragePieces}個`)}
+ function testFullSpin(){if(!isPlaying())return;omenState='active';omenRemaining=OMEN_DURATION;setRotation(0,1);setStatus('🌀 360°回転テスト');note('🌀 神の全回転！ 一周ドーン！')}
+ function omen(){if(shield>0&&armed){shield--;armed=false;note('🛡 お告げを1回防御！');update();return}omenCount++;if(omenCount%4===0)beginRage();else spin()}
+ function useShield(){if(!isPlaying()||shield<1)return;armed=!armed;note(armed?'🛡 次のお告げを防御予約！':'防御予約を解除');update()}
+ function levelChoice(){const pool=[
+  {title:'💥 神の大掃除',desc:'下から3段をまとめて消去',apply:()=>clearBottom(3)},
+  {title:'🛡 神の加護',desc:'防御を3回追加し、盤面を正面に戻す',apply:()=>{shield+=3;beginReturn();note('🛡 神の加護！')}},
+  {title:'⏳ 時の祝福',desc:'次の12個の落下速度を半分にする',apply:()=>{slowPieces+=12;note('⏳ 12個の雲がゆっくり落ちる！')}},
+  {title:'✨ 神の救済',desc:'下から2段を消去＋防御1回',apply:()=>{clearBottom(2);shield++}},
+  {title:'💰 黄金のお告げ',desc:'即座に600点獲得',apply:()=>{score+=600;note('💰 600点獲得！')}},
+  {title:'🌀 神との賭け',desc:'強制回転する代わりに900点＋防御1回',apply:()=>{spin();score+=900;shield++;note('🌀 神との賭け！ +900点')}}
+ ];const picks=[];while(picks.length<3){const p=pool[rand(pool.length)];if(!picks.includes(p))picks.push(p)}showDialog(`LEVEL ${level}！`,'神の力をひとつ選べ。雲の塊を操って切り抜けろ www',picks.map(p=>({title:p.title,desc:p.desc,fn:()=>{p.apply();update();spawn();if(phase!=='over')resume()}})))}
+ function finalizeLockProgress(wasRage){
+  if(score>best){best=score;try{localStorage.setItem(storageKey,String(best))}catch(e){}}
+  update();
+  if(score>=level*500){level++;fallMs=Math.max(145,680-(level-1)*48);update();levelChoice();return}
+  if(wasRage){ragePieces--;if(ragePieces<=0)beginReturn();else rageRotate()}
+  else if(score>=nextOmenScore){nextOmenScore=score+260+rand(220);omen()}
+  spawn();update()
+ }
+ function beginClear(rows,gain,count,wasRage){clearFx={rows:[...rows],timer:380,duration:380,gain,count,wasRage};piece=null;groundedMs=0;wasGrounded=false;note('☁ 雲がふわっとほどける…')}
+ function finishClear(){
+  if(!clearFx)return;
+  const fx=clearFx;
+  const sorted=[...fx.rows].sort((a,b)=>b-a);
+  for(const y of sorted){board.splice(y,1);board.unshift(Array(W).fill(-1))}
+  lines+=fx.count;score+=fx.gain;note(`${fx.count}列の雲がふわっとほどけた！ +${fx.gain}点`);clearFx=null;finalizeLockProgress(fx.wasRage)
+ }
+ function tickClear(dt){if(!clearFx)return;clearFx.timer=Math.max(0,clearFx.timer-dt);if(clearFx.timer<=0)finishClear()}
+
+ function drawCloudCell(context, style, x, y, size, alpha=1){context.save();context.globalAlpha=alpha;const puff=(px,py,r,c)=>{context.beginPath();context.fillStyle=c;context.arc(px,py,r,0,Math.PI*2);context.fill()};const cx=x+size/2,cy=y+size/2;const base=Math.max(4,size*0.23);puff(cx-size*0.18,cy+size*0.07,base*1.05,style.fill);puff(cx,cy-size*0.02,base*1.18,style.fill);puff(cx+size*0.2,cy+size*0.06,base,style.fill);puff(cx-size*0.02,cy+size*0.2,base*1.06,style.fill);context.beginPath();context.fillStyle=style.fill;context.ellipse(cx,cy+size*0.1,size*0.36,size*0.22,0,0,Math.PI*2);context.fill();context.beginPath();context.fillStyle=style.shade;context.ellipse(cx,cy+size*0.22,size*0.28,size*0.12,0,0,Math.PI*2);context.fill();context.beginPath();context.fillStyle=style.accent;context.ellipse(cx-size*0.06,cy-size*0.02,size*0.18,size*0.08,-0.2,0,Math.PI*2);context.fill();context.restore()}
+ function drawNext(){nextCtx.clearRect(0,0,90,90);if(!next)return;const sh=next.shape,z=19,x=(90-sh[0].length*z)/2,y=(90-sh.length*z)/2;for(let j=0;j<sh.length;j++)for(let i=0;i<sh[j].length;i++)if(sh[j][i])drawCloudCell(nextCtx,colors[next.color],x+i*z,y+j*z,z,1)}
+ function lock(){if(!isPlaying()||!piece)return;if(slowPieces>0)slowPieces--;const wasRage=omenState==='rage';for(let j=0;j<piece.shape.length;j++)for(let i=0;i<piece.shape[j].length;i++)if(piece.shape[j][i]){const y=piece.y+j,x=piece.x+i;if(y<0){endGame();return}board[y][x]=piece.color}const clearRows=[];for(let y=H-1;y>=0;y--)if(board[y].every(c=>c!==-1))clearRows.push(y);if(clearRows.length){const gain=[0,100,260,450,700][Math.min(clearRows.length,4)]*level;beginClear(clearRows,gain,clearRows.length,wasRage)}else{score+=8;finalizeLockProgress(wasRage)}}
+ function hardDrop(){if(!isPlaying()||!piece)return;let distance=0;while(fits(piece.shape,piece.x,piece.y+1)){piece.y++;distance++}score+=distance*2;lock()}
+ function draw(t){const dt=last?Math.min(60,t-last):0;last=t;const easing=1-Math.exp(-dt/(fullSpin?320:175));angle+=(targetAngle-angle)*easing;if(Math.abs(targetAngle-angle)<0.08){angle=targetAngle;if(fullSpin){angle=normalizeDegrees(angle);targetAngle=angle;fullSpin=false}}tickOmen(dt);if(isPlaying())tickClear(dt);ctx.clearRect(0,0,CW,CW);const sky=ctx.createLinearGradient(0,0,0,CW);sky.addColorStop(0,'#7fc7ff');sky.addColorStop(.55,'#bce5ff');sky.addColorStop(1,'#effaff');ctx.fillStyle=sky;ctx.fillRect(0,0,CW,CW);ctx.fillStyle='#ffffff88';ctx.beginPath();ctx.ellipse(88,62,48,18,0,0,Math.PI*2);ctx.ellipse(118,58,36,15,0,0,Math.PI*2);ctx.fill();ctx.beginPath();ctx.ellipse(420,88,52,20,0,0,Math.PI*2);ctx.ellipse(454,83,34,14,0,0,Math.PI*2);ctx.fill();ctx.save();ctx.translate(CW/2,CW/2);ctx.strokeStyle='#ffffff66';for(let r=100;r<=240;r+=40){ctx.beginPath();ctx.arc(0,0,r,0,Math.PI*2);ctx.stroke()}ctx.restore();
+ const theta=angle*Math.PI/180;const boundingWidth=Math.abs(W*S*Math.cos(theta))+Math.abs(H*S*Math.sin(theta));const boundingHeight=Math.abs(W*S*Math.sin(theta))+Math.abs(H*S*Math.cos(theta));const safe=486;const scale=Math.min(1,safe/Math.max(boundingWidth,boundingHeight));ctx.save();ctx.translate(CW/2,CW/2);ctx.scale(scale,scale);ctx.rotate(theta);ctx.translate(-W*S/2,-H*S/2);
+ const boardGrad=ctx.createLinearGradient(0,0,0,H*S);boardGrad.addColorStop(0,'#effaff');boardGrad.addColorStop(1,'#d8f0ff');ctx.fillStyle=boardGrad;ctx.fillRect(-8,-8,W*S+16,H*S+16);ctx.strokeStyle='#8dbde8';ctx.lineWidth=3;ctx.strokeRect(-6,-6,W*S+12,H*S+12);
+ for(let y=0;y<H;y++)for(let x=0;x<W;x++){ctx.fillStyle=(x+y)%2?'#e8f6ff':'#def0ff';ctx.fillRect(x*S,y*S,S-1,S-1);if(board[y][x]!==-1){let alpha=1;if(clearFx&&clearFx.rows.includes(y))alpha=Math.max(.08,clearFx.timer/clearFx.duration);drawCloudCell(ctx,colors[board[y][x]],x*S,y*S,S+1,alpha)}}
+ if(clearFx){const fade=1-clearFx.timer/clearFx.duration;for(const row of clearFx.rows){for(let p=0;p<7;p++){const px=18+p*34+(p%2)*8;const py=row*S+S*0.55;ctx.beginPath();ctx.fillStyle=`rgba(255,255,255,${0.18+fade*0.32})`;ctx.ellipse(px+fade*10,py,12+fade*8,6+fade*3,0,0,Math.PI*2);ctx.fill();}}}
+ if(piece&&phase!=='over'){let ghostY=piece.y;while(fits(piece.shape,piece.x,ghostY+1))ghostY++;for(let j=0;j<piece.shape.length;j++)for(let i=0;i<piece.shape[j].length;i++)if(piece.shape[j][i]){if(ghostY+j>=0)drawCloudCell(ctx,colors[piece.color],(piece.x+i)*S,(ghostY+j)*S,S+1,.22);if(piece.y+j>=0)drawCloudCell(ctx,colors[piece.color],(piece.x+i)*S,(piece.y+j)*S,S+1,1)}}
+ ctx.fillStyle='#f7cf76';ctx.fillRect(W*S/2-23,-12,46,6);ctx.fillStyle='#7a6130';ctx.textAlign='center';ctx.font='bold 13px system-ui';ctx.fillText('雲の入口',W*S/2,-19);ctx.restore();
+ ctx.fillStyle='#1f466a';ctx.font='bold 13px system-ui';ctx.textAlign='left';ctx.fillText(`神の角度 ${Math.round(angle)>0?'+':''}${Math.round(angle)}°`,16,22);if(armed){ctx.fillStyle='#3d8b65';ctx.font='bold 13px system-ui';ctx.textAlign='center';ctx.fillText('🛡 次のお告げを防御',270,524)}if(isPlaying()&&piece&&!clearFx){acc+=dt;const gravity=slowPieces>0?fallMs*2:fallMs;const interval=soft?Math.max(35,gravity/11):gravity;if(acc>=interval){acc=0;move(0,1)}if(piece&&!fits(piece.shape,piece.x,piece.y+1)){if(!wasGrounded){wasGrounded=true;groundedMs=0}else groundedMs+=dt;if(groundedMs>=LOCK_DELAY)lock()}else{wasGrounded=false;groundedMs=0}}if(t>noticeUntil&&phase==='playing'&&omenState==='idle'&&!clearFx&&$('message').textContent!=='神様は気まぐれ。')$('message').textContent='神様は気まぐれ。';updateAngleOnly();requestAnimationFrame(draw)}
+ function updateAngleOnly(){const a=`${Math.round(angle)}°`;if($('angle').textContent!==a)$('angle').textContent=a;if($('miniAngle').textContent!==a)$('miniAngle').textContent=a}
+ function bindRepeat(id,fn){const el=$(id);let timeout=null,interval=null;const stop=()=>{clearTimeout(timeout);clearInterval(interval);timeout=interval=null};el.addEventListener('pointerdown',e=>{if(e.button!==0&&e.pointerType==='mouse')return;e.preventDefault();stop();fn();timeout=setTimeout(()=>{interval=setInterval(fn,90)},240)});for(const event of ['pointerup','pointercancel','pointerleave'])el.addEventListener(event,stop);window.addEventListener('blur',stop)}
+ bindRepeat('left',()=>move(-1,0));bindRepeat('right',()=>move(1,0));bindRepeat('turn',rotatePiece);
+ $('drop').addEventListener('pointerdown',e=>{e.preventDefault();hardDrop()});$('item').addEventListener('pointerdown',e=>{e.preventDefault();useShield()});$('down').addEventListener('pointerdown',e=>{e.preventDefault();if(isPlaying())soft=true});for(const event of ['pointerup','pointercancel','pointerleave'])$('down').addEventListener(event,()=>{soft=false});window.addEventListener('blur',()=>{soft=false;if(isPlaying())pauseGame()});
+ window.addEventListener('keydown',e=>{if(['ArrowLeft','ArrowRight','ArrowUp','ArrowDown','Space'].includes(e.code))e.preventDefault();if(e.code==='KeyP'){if(!e.repeat)togglePause();return}if(!isPlaying())return;if(e.code==='ArrowDown'){soft=true;return}if(e.repeat&&['ArrowUp','Space','KeyX'].includes(e.code))return;switch(e.code){case'ArrowLeft':move(-1,0);break;case'ArrowRight':move(1,0);break;case'ArrowUp':rotatePiece();break;case'Space':hardDrop();break;case'KeyX':useShield();break}});
+ window.addEventListener('keyup',e=>{if(e.code==='ArrowDown')soft=false});
+ function pauseGame(){if(!isPlaying())return;showDialog('一時停止','休憩中。神様もいったん雲の上で休憩だ www',[{title:'再開する',primary:true,fn:resume},{title:'最初からやり直す',fn:start}])}
+ function togglePause(){if(isPlaying())pauseGame();else if(phase==='paused')resume()}
+ $('pause').addEventListener('click',togglePause);
+ $('difficulty').addEventListener('change',()=>{const m=maxAngle();if(omenState==='active')setRotation(Math.max(-m,Math.min(m,normalizeDegrees(targetAngle))));note(`回転設定：最大 ±${m}°`)});
+ $('rageTest').addEventListener('click',()=>{if(isPlaying())beginRage();else note('ゲームを開始してから試せるぞ！')});
+ $('spinTest').addEventListener('click',()=>{if(isPlaying())testFullSpin();else note('ゲームを開始してから試せるぞ！')});
+ document.addEventListener('visibilitychange',()=>{if(document.hidden&&isPlaying())pauseGame()});
+ $('start').addEventListener('click',start);drawNext();update();requestAnimationFrame(draw);
+ window.__kamiTest={getState:()=>({phase,score,level,lines,angle,targetAngle,best,shield,maxAngle:maxAngle(),groundedMs,lockResets,slowPieces,omenState,omenRemaining,ragePieces,piece:piece&&{x:piece.x,y:piece.y},board:board.map(r=>r.slice())}),omen,hardDrop,start,pause:togglePause,beginRage,beginReturn,setRotation,testFullSpin};
+})();
+</script>
+</body>
+</html>
