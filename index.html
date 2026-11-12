@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#10172b">
-<title>神のお告げ | PROTO 02</title>
+<title>神のお告げ | PROTO 02.1</title>
 <style>
 :root{color-scheme:dark;--bg:#0a1020;--panel:#151f36;--ink:#eaf3ff;--muted:#adc0df;--gold:#ffd17a;--accent:#76e3ee;--edge:#3c5274}
 *{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;min-width:290px;background:radial-gradient(ellipse at 40% -10%,#233c64 0%,var(--bg) 62%);color:var(--ink);font-family:system-ui,-apple-system,"Hiragino Kaku Gothic ProN","Yu Gothic",sans-serif}
@@ -20,7 +20,7 @@ button,select{font:inherit}button{border:1px solid #59759c;background:#2a4264;co
 </head>
 <body>
 <div class="wrap">
-  <header class="heading"><div><div class="eyebrow">ORIGINAL / ROGUELIKE PUZZLE</div><h1>神のお告げ <span>PROTO 02</span></h1></div><div class="tag">神様は気まぐれだ www</div></header>
+  <header class="heading"><div><div class="eyebrow">ORIGINAL / ROGUELIKE PUZZLE</div><h1>神のお告げ <span>PROTO 02.1</span></h1></div><div class="tag">神様は気まぐれだ www</div></header>
   <div class="layout">
     <main class="main">
       <div class="stats-top" aria-label="ゲーム情報"><div class="mini"><small>SCORE</small><strong id="miniScore">0</strong></div><div class="mini"><small>LEVEL</small><strong id="miniLevel">1</strong></div><div class="mini"><small>LINES</small><strong id="miniLines">0</strong></div><div class="mini"><small>ANGLE</small><strong id="miniAngle">0°</strong></div></div>
@@ -37,11 +37,11 @@ button,select{font:inherit}button{border:1px solid #59759c;background:#2a4264;co
     <aside class="side">
       <section class="panel mainstats"><div class="stat"><label>SCORE</label><b id="score">0</b></div><div class="stat"><label>LEVEL</label><b id="level">1</b></div><div class="stat"><label>LINES</label><b id="lines">0</b></div><div class="stat"><label>角度</label><b id="angle">0°</b></div><div class="stat"><label>BEST</label><b id="best">0</b></div></section>
       <section class="panel"><div class="nextrow"><canvas id="next" width="90" height="90" aria-label="次のブロック"></canvas><div><strong>NEXT</strong><p class="small" style="margin:3px 0">次の駒</p></div></div><div class="notice" id="message" aria-live="polite">神様は気まぐれ。</div></section>
-      <section class="panel config"><h3>回転の強さ</h3><label class="small" for="difficulty">初期設定：遊びやすい標準モード</label><select id="difficulty"><option value="mild">やさしい（最大15°）</option><option value="normal" selected>標準（最大30°）</option><option value="wild">神の暴走（最大45°）</option></select><p class="small" id="progress">次のレベルまで 500 点</p><p class="small">お告げ防御は取得後、ボタンで予約すると次の回転を1回防げる。</p></section>
-      <section class="panel howto"><h3>遊び方</h3><p class="small">ブロックを横一列に揃えて消そう。得点を稼ぐとレベルアップし、3つの強化から1つを選べる。神のお告げで盤面が傾くが、落下と操作は盤面のマス目基準。</p><button class="secondary" id="pause">一時停止 / 再開</button></section>
+      <section class="panel config"><h3>回転の強さ</h3><label class="small" for="difficulty">レベル上昇で回転角度が広がる</label><select id="difficulty"><option value="mild">やさしい（最大15°）</option><option value="normal" selected>標準（最大30°）</option><option value="wild">神の暴走（最大45°）</option></select><p class="small" id="progress">次のレベルまで 500 点</p><p class="small" id="angleCap">現在の最大回転角度 ±15°</p><p class="small">お告げ防御は取得後、ボタンで予約すると次の回転を1回防げる。</p></section>
+      <section class="panel howto"><h3>遊び方</h3><p class="small">ブロックを横一列に揃えて消そう。着地後0.5秒は移動・回転できる（最大8回の猶予回復）。即落下はその場で固定。レベルアップ時は3つの強化から1つを選べる。神のお告げで盤面が傾くが、落下と操作は盤面のマス目基準。</p><button class="secondary" id="pause">一時停止 / 再開</button></section>
     </aside>
   </div>
-  <p class="footer">© 神のお告げ / 生主ルパン × ChatGPT・オリジナル試作。PROTO 02。ブラウザで動作。iPhoneの「ファイル」プレビューなど、JavaScriptが動かないビューアでは遊べません。Safari・Chrome・Edgeなどで開いてください。</p>
+  <p class="footer">© 神のお告げ / 生主ルパン × ChatGPT・オリジナル試作。PROTO 02.1。ブラウザで動作。iPhoneの「ファイル」プレビューなど、JavaScriptが動かないビューアでは遊べません。Safari・Chrome・Edgeなどで開いてください。</p>
 </div>
 <script>
 (()=>{
@@ -53,28 +53,30 @@ button,select{font:inherit}button{border:1px solid #59759c;background:#2a4264;co
  const storageKey='kami-no-otsuge-proto02-best';
  let board=empty(),piece=null,next=null,score=0,level=1,lines=0,shield=0,armed=false;
  let phase='intro',angle=0,targetAngle=0,fallMs=680,soft=false,acc=0,last=0,noticeUntil=0,nextOmenScore=320,best=0;
+ const LOCK_DELAY=500,MAX_LOCK_RESETS=8;let groundedMs=0,lockResets=0,wasGrounded=false;
  try{best=Number(localStorage.getItem(storageKey))||0}catch(e){}
- const maxAngle=()=>({mild:15,normal:30,wild:45}[$('difficulty').value]||30);
+ const maxAngle=()=>{const mode=$('difficulty').value;const cap=({mild:15,normal:30,wild:45}[mode]||30);const first=({mild:8,normal:15,wild:20}[mode]||15);return Math.min(cap,first+Math.floor((level-1)/2)*5)};
  function empty(){return Array.from({length:H},()=>Array(W).fill(-1))}
  function rand(n){return Math.floor(Math.random()*n)}
  function randomPiece(){return{shape:shapes[rand(shapes.length)].map(a=>a.slice()),color:rand(colors.length),x:3,y:-1}}
  function fits(sh,x,y){for(let j=0;j<sh.length;j++)for(let i=0;i<sh[j].length;i++)if(sh[j][i]){const xx=x+i,yy=y+j;if(xx<0||xx>=W||yy>=H||(yy>=0&&board[yy][xx]!==-1))return false}return true}
  function isPlaying(){return phase==='playing'}
  function update(){for(const [id,val] of Object.entries({score:score.toLocaleString(),level,lines,angle:`${Math.round(angle)}°`,miniScore:score.toLocaleString(),miniLevel:level,miniLines:lines,miniAngle:`${Math.round(angle)}°`,best:best.toLocaleString()})){if($(id))$(id).textContent=val}
- $('shields').textContent=shield+(armed?' ✓':'');$('item').classList.toggle('on',armed);$('progress').textContent=`次のレベルまで ${Math.max(0,level*500-score)} 点`}
+ $('shields').textContent=shield+(armed?' ✓':'');$('item').classList.toggle('on',armed);$('progress').textContent=`次のレベルまで ${Math.max(0,level*500-score)} 点`; $('angleCap').textContent=`現在の最大回転角度 ±${maxAngle()}°（Lv.${level}）`}
  function note(t){$('message').textContent=t;noticeUntil=performance.now()+3200}
  function showDialog(title,html,choices){phase=title==='GAME OVER'?'over':title==='一時停止'?'paused':title.startsWith('LEVEL')?'choice':'intro';soft=false;acc=0;
  $('modalTitle').textContent=title;$('modalBody').innerHTML=html;$('choices').replaceChildren();
  for(const c of choices){const b=document.createElement('button');b.className=c.primary?'primary':'';b.textContent=c.title;if(c.desc){const small=document.createElement('small');small.textContent=c.desc;b.append(small)}b.addEventListener('click',c.fn);$('choices').append(b)}$('overlay').classList.remove('hidden');}
  function resume(){phase='playing';acc=0;last=performance.now();$('overlay').classList.add('hidden');update()}
- function start(){board=empty();score=0;level=1;lines=0;shield=0;armed=false;soft=false;angle=0;targetAngle=0;fallMs=680;next=null;nextOmenScore=320+rand(150);piece=null;spawn();update();note('ゲーム開始！ 神様は気まぐれだ www');resume()}
- function spawn(){piece=next||randomPiece();next=randomPiece();piece.x=Math.floor((W-piece.shape[0].length)/2);piece.y=-1;drawNext();if(!fits(piece.shape,piece.x,piece.y))endGame()}
+ function start(){board=empty();score=0;level=1;lines=0;shield=0;armed=false;soft=false;angle=0;targetAngle=0;fallMs=680;next=null;nextOmenScore=320+rand(150);piece=null;groundedMs=0;lockResets=0;wasGrounded=false;spawn();update();note('ゲーム開始！ 神様は気まぐれだ www');resume()}
+ function spawn(){groundedMs=0;lockResets=0;wasGrounded=false;piece=next||randomPiece();next=randomPiece();piece.x=Math.floor((W-piece.shape[0].length)/2);piece.y=-1;drawNext();if(!fits(piece.shape,piece.x,piece.y))endGame()}
  function endGame(){if(score>best){best=score;try{localStorage.setItem(storageKey,String(best))}catch(e){}}
  update();showDialog('GAME OVER',`スコア <b>${score.toLocaleString()}</b> ／ ベスト <b>${best.toLocaleString()}</b><br>レベル ${level} ／ 消去 ${lines} 列<br><br>神様は再挑戦を待っている www`,[{title:'もう一度挑戦する',primary:true,fn:start}]);}
  function rotate(sh){return sh[0].map((_,i)=>sh.map(r=>r[i]).reverse())}
- function rotatePiece(){if(!isPlaying()||!piece)return;const r=rotate(piece.shape);for(const dx of [0,-1,1,-2,2])if(fits(r,piece.x+dx,piece.y)){piece.shape=r;piece.x+=dx;return}}
- function move(dx,dy){if(!isPlaying()||!piece)return false;if(fits(piece.shape,piece.x+dx,piece.y+dy)){piece.x+=dx;piece.y+=dy;return true}if(dy>0)lock();return false}
- function lock(){if(!isPlaying())return;
+ function afterAdjustment(){if(!piece)return; if(fits(piece.shape,piece.x,piece.y+1)){groundedMs=0;wasGrounded=false}else if(wasGrounded&&lockResets<MAX_LOCK_RESETS){groundedMs=0;lockResets++}}
+ function rotatePiece(){if(!isPlaying()||!piece)return;const r=rotate(piece.shape);for(const dx of [0,-1,1,-2,2])if(fits(r,piece.x+dx,piece.y)){piece.shape=r;piece.x+=dx;afterAdjustment();return}}
+ function move(dx,dy){if(!isPlaying()||!piece)return false;if(fits(piece.shape,piece.x+dx,piece.y+dy)){piece.x+=dx;piece.y+=dy;if(dx!==0)afterAdjustment();return true}return false}
+ function lock(){if(!isPlaying()||!piece)return;
  for(let j=0;j<piece.shape.length;j++)for(let i=0;i<piece.shape[j].length;i++)if(piece.shape[j][i]){const y=piece.y+j,x=piece.x+i;if(y<0){endGame();return}board[y][x]=piece.color}
  let cleared=0;for(let y=H-1;y>=0;y--)if(board[y].every(c=>c!==-1)){board.splice(y,1);board.unshift(Array(W).fill(-1));cleared++;y++}
  if(cleared){lines+=cleared;const gain=[0,100,260,450,700][Math.min(cleared,4)]*level;score+=gain;note(`${cleared}列消去！ +${gain}点`)}else score+=8;
@@ -111,7 +113,9 @@ button,select{font:inherit}button{border:1px solid #59759c;background:#2a4264;co
  ctx.fillStyle='#ffda87';ctx.fillRect(W*S/2-17,-12,34,6);ctx.fillStyle='#f7d68a';ctx.textAlign='center';ctx.font='bold 13px system-ui';ctx.fillText('入口',W*S/2,-19);ctx.restore();
  ctx.fillStyle='#eff7ff';ctx.font='bold 13px system-ui';ctx.textAlign='left';ctx.fillText(`神の角度 ${Math.round(angle)>0?'+':''}${Math.round(angle)}°`,16,22);
  if(armed){ctx.fillStyle='#93f4c5';ctx.font='bold 13px system-ui';ctx.textAlign='center';ctx.fillText('🛡 次のお告げを防御',270,524)}
- if(isPlaying()){acc+=dt;const interval=soft?Math.max(35,fallMs/11):fallMs;if(acc>=interval){acc=0;move(0,1)}}
+ if(isPlaying()&&piece){acc+=dt;const interval=soft?Math.max(35,fallMs/11):fallMs;if(acc>=interval){acc=0;move(0,1)}
+ // First ground contact starts a grace period; movement/rotation can refresh it up to a limit.
+ if(piece&&!fits(piece.shape,piece.x,piece.y+1)){if(!wasGrounded){wasGrounded=true;groundedMs=0}else groundedMs+=dt;if(groundedMs>=LOCK_DELAY)lock()}else{wasGrounded=false;groundedMs=0}}
  if(t>noticeUntil&&phase==='playing'&&$('message').textContent!=='神様は気まぐれ。'){$('message').textContent='神様は気まぐれ。'}
  updateAngleOnly();requestAnimationFrame(draw)}
  function updateAngleOnly(){const a=`${Math.round(angle)}°`;if($('angle').textContent!==a)$('angle').textContent=a;if($('miniAngle').textContent!==a)$('miniAngle').textContent=a}
@@ -129,7 +133,7 @@ button,select{font:inherit}button{border:1px solid #59759c;background:#2a4264;co
  document.addEventListener('visibilitychange',()=>{if(document.hidden&&isPlaying())pauseGame()});
  $('start').addEventListener('click',start);drawNext();update();requestAnimationFrame(draw);
  // Minimal test interface; no external services or dependencies.
- window.__kamiTest={getState:()=>({phase,score,level,lines,angle,targetAngle,best,shield,piece:piece&&{x:piece.x,y:piece.y},board:board.map(r=>r.slice())}),omen,hardDrop,start,pause:togglePause};
+ window.__kamiTest={getState:()=>({phase,score,level,lines,angle,targetAngle,best,shield,maxAngle:maxAngle(),groundedMs,lockResets,piece:piece&&{x:piece.x,y:piece.y},board:board.map(r=>r.slice())}),omen,hardDrop,start,pause:togglePause};
 })();
 </script>
 </body>
