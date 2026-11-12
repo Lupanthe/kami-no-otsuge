@@ -37,7 +37,7 @@ button,select{font:inherit}button{border:1px solid #59759c;background:#2a4264;co
     <aside class="side">
       <section class="panel mainstats"><div class="stat"><label>SCORE</label><b id="score">0</b></div><div class="stat"><label>LEVEL</label><b id="level">1</b></div><div class="stat"><label>LINES</label><b id="lines">0</b></div><div class="stat"><label>角度</label><b id="angle">0°</b></div><div class="stat"><label>BEST</label><b id="best">0</b></div></section>
       <section class="panel"><div class="nextrow"><canvas id="next" width="90" height="90" aria-label="次のブロック"></canvas><div><strong>NEXT</strong><p class="small" style="margin:3px 0">次の駒</p></div></div><div class="notice" id="message" aria-live="polite">神様は気まぐれ。</div></section>
-      <section class="panel config"><h3>回転の強さ</h3><label class="small" for="difficulty">レベル上昇で回転角度が広がる</label><select id="difficulty"><option value="mild">やさしい（最大30°）</option><option value="normal" selected>標準（最大60°）</option><option value="wild">神の暴走（最大90°）</option></select><p class="small" id="progress">次のレベルまで 500 点</p><p class="small" id="angleCap">現在の最大回転角度 ±15°</p><p class="small" id="omenStatus" aria-live="polite">神のお告げ：待機中</p><button id="rageTest" class="secondary" style="width:100%;margin-top:6px">⚡ 神の逆鱗を試す（テスト）</button><p class="small">お告げ防御はボタンで予約し次の回転を防ぐ。強化では盤面消去・防御3回・落下速度半減などを選べる。</p></section>
+      <section class="panel config"><h3>回転の強さ</h3><label class="small" for="difficulty">レベル上昇で回転角度が広がる</label><select id="difficulty"><option value="mild">やさしい（最大30°）</option><option value="normal" selected>標準（最大60°）</option><option value="wild">神の暴走（最大90°）</option></select><p class="small" id="progress">次のレベルまで 500 点</p><p class="small" id="angleCap">現在の最大回転角度 ±15°</p><p class="small" id="omenStatus" aria-live="polite">神のお告げ：待機中</p><button id="rageTest" class="secondary" style="width:100%;margin-top:6px">⚡ 神の逆鱗を試す（テスト）</button><button id="spinTest" class="secondary" style="width:100%;margin-top:6px">🌀 360°回転テスト</button><p class="small">お告げ防御はボタンで予約し次の回転を防ぐ。強化では盤面消去・防御3回・落下速度半減などを選べる。</p></section>
       <section class="panel howto"><h3>遊び方</h3><p class="small">ブロックを横一列に揃えて消そう。着地後1.1秒は移動・回転できる（最大10回の猶予回復）。即落下は即固定。盤面は一定時間で正面へ戻り、神の逆鱗中は1個固定するごとに角度が変わる。レベルアップ時は3つの強化から1つを選べる。神のお告げで盤面が傾くが、落下と操作は盤面のマス目基準。</p><button class="secondary" id="pause">一時停止 / 再開</button></section>
     </aside>
   </div>
@@ -95,6 +95,7 @@ button,select{font:inherit}button{border:1px solid #59759c;background:#2a4264;co
  function spin(){const max=maxAngle();let n=rand(max*2+1)-max;if(Math.abs(n)<10)n=n<0?-Math.min(15,max):Math.min(15,max);omenState='active';omenRemaining=OMEN_DURATION;setRotation(n);setStatus('神のお告げ：発動中');note(`⚡ 神のお告げ！ 盤面 ${n>0?'+':''}${n}°`)}
  function rageRotate(){const options=[-180,-135,-90,-60,60,90,135,180];let n=options[rand(options.length)];if(Math.abs(normalizeDegrees(targetAngle)-normalizeDegrees(n))<15)n=-n;setRotation(n);note(`⚡ 神の逆鱗！ ${n}°へドーン！`)}
  function beginRage(){if(!isPlaying())return;omenState='rage';ragePieces=RAGE_PIECES;omenRemaining=0;rageRotate();setStatus(`⚡ 神の逆鱗：あと${ragePieces}個`)}
+ function testFullSpin(){if(!isPlaying())return;omenState='active';omenRemaining=OMEN_DURATION;setRotation(0,1);setStatus('🌀 360°回転テスト');note('🌀 神の全回転！ 一周ドーン！')}
  function omen(){if(shield>0&&armed){shield--;armed=false;note('🛡 お告げを1回防御！');update();return}omenCount++;if(omenCount%4===0)beginRage();else spin()}
  function useShield(){if(!isPlaying()||shield<1)return;armed=!armed;note(armed?'🛡 次のお告げを防御予約！':'防御予約を解除');update()}
  function clearBottom(rows){const n=Math.min(rows,H);board.splice(H-n,n);for(let i=0;i<n;i++)board.unshift(Array(W).fill(-1));note(`✨ 下から${n}段を消去！`)}
@@ -141,10 +142,11 @@ button,select{font:inherit}button{border:1px solid #59759c;background:#2a4264;co
  $('pause').addEventListener('click',togglePause);
  $('difficulty').addEventListener('change',()=>{const m=maxAngle();if(omenState==='active')setRotation(Math.max(-m,Math.min(m,normalizeDegrees(targetAngle))));note(`回転設定：最大 ±${m}°`)});
  $('rageTest').addEventListener('click',()=>{if(isPlaying())beginRage();else note('ゲームを開始してから試せるぞ！')});
+ $('spinTest').addEventListener('click',()=>{if(isPlaying())testFullSpin();else note('ゲームを開始してから試せるぞ！')});
  document.addEventListener('visibilitychange',()=>{if(document.hidden&&isPlaying())pauseGame()});
  $('start').addEventListener('click',start);drawNext();update();requestAnimationFrame(draw);
  // Minimal test interface; no external services or dependencies.
- window.__kamiTest={getState:()=>({phase,score,level,lines,angle,targetAngle,best,shield,maxAngle:maxAngle(),groundedMs,lockResets,slowPieces,piece:piece&&{x:piece.x,y:piece.y},board:board.map(r=>r.slice()),omenState,omenRemaining,ragePieces}),omen,hardDrop,start,pause:togglePause,beginRage,beginReturn,setRotation};
+ window.__kamiTest={getState:()=>({phase,score,level,lines,angle,targetAngle,best,shield,maxAngle:maxAngle(),groundedMs,lockResets,slowPieces,piece:piece&&{x:piece.x,y:piece.y},board:board.map(r=>r.slice()),omenState,omenRemaining,ragePieces}),omen,hardDrop,start,pause:togglePause,beginRage,beginReturn,setRotation,testFullSpin};
 })();
 </script>
 </body>
