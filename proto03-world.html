@@ -1,0 +1,262 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#91c8ff">
+<title>神のお告げ | PROTO 03.7 WORLD ROTATION TEST</title>
+<style>
+:root{color-scheme:light;--bg:#dff1ff;--panel:#f6fbff;--ink:#214267;--muted:#577a9f;--gold:#f7c86a;--accent:#67bfff;--edge:#a9d5fb;--shadow:#79a8d733}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;min-width:290px;background:linear-gradient(180deg,#bfe2ff 0%,#e7f6ff 42%,#f7fbff 100%);color:var(--ink);font-family:system-ui,-apple-system,"Hiragino Kaku Gothic ProN","Yu Gothic",sans-serif}
+button,select{font:inherit}button{border:1px solid #86b8e8;background:#e9f5ff;color:#23456a;border-radius:14px;font-weight:800;min-height:48px;padding:10px 14px;cursor:pointer;touch-action:manipulation;user-select:none;-webkit-user-select:none;box-shadow:0 4px 14px #76a9d01c}button:hover{background:#f3faff}button:focus-visible,select:focus-visible{outline:3px solid var(--accent);outline-offset:3px}button:active{filter:brightness(0.98)}button.primary{background:linear-gradient(145deg,#ffe6a5,#f4c56a);color:#5a410a;border-color:#f7d27d}button.secondary{background:#e9f3ff}.wrap{max-width:1080px;padding:16px;margin:auto}.heading{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}.eyebrow{font-size:11px;letter-spacing:2.8px;font-weight:800;color:#9b7d37}h1{font-size:clamp(24px,4.5vw,37px);margin:4px 0}h1 span{font-size:13px;color:#6797bf;letter-spacing:1px}.tag{font-size:12px;color:var(--muted);border:1px solid var(--edge);background:#ffffffa8;border-radius:30px;padding:8px 11px}
+.layout{display:grid;grid-template-columns:minmax(0,1fr) 286px;gap:14px;margin-top:12px}.main{min-width:0}.stats-top{display:none}.stage{position:relative;max-width:620px;margin:0 auto;overflow:hidden;border:1px solid #7eb6e5;border-radius:22px;background:linear-gradient(180deg,#6eb8f4 0%,#a6d9ff 55%,#e7f5ff 100%);box-shadow:0 18px 50px #4f86b626}.stage::before,.stage::after{content:"";position:absolute;border-radius:999px;background:#ffffff80;filter:blur(1px)}.stage::before{width:110px;height:38px;left:18px;top:18px}.stage::after{width:88px;height:32px;right:26px;top:48px}.stage canvas{display:block;width:100%;aspect-ratio:1/1;height:auto;touch-action:none}
+.overlay{position:absolute;inset:0;z-index:5;background:#d8f0ffdd;display:flex;align-items:center;justify-content:center;padding:10px}.overlay.hidden{display:none}.dialog{width:min(100%,420px);max-height:100%;overflow:auto;border-radius:20px;background:linear-gradient(180deg,#ffffff,#eef8ff);border:1px solid #b8daf6;box-shadow:0 15px 60px #7aa6cf33;padding:clamp(12px,3vw,24px);text-align:center}.dialog h2{font-size:clamp(19px,4.6vw,25px);margin:0 0 10px}.dialog p{font-size:clamp(12px,2.6vw,14px);line-height:1.7;margin:8px 0;color:#496b8e}.choice-list{display:grid;gap:8px;margin-top:12px}.choice-list button{width:100%;text-align:left;padding:10px 14px;font-size:14px}.choice-list small{font-weight:500;display:block;color:#6789ab;font-size:11px;margin-top:4px}
+.controls{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin-top:9px}.controls button{min-height:58px;font-size:24px;padding:6px}.controls .wide{grid-column:span 2;font-size:14px}.controls .shield{background:#eff8ff}.controls .on{box-shadow:inset 0 0 0 2px #f5cc72}.controls button:disabled{opacity:.55;cursor:not-allowed}.help{font-size:12px;color:var(--muted);text-align:center;margin:8px 0 0;line-height:1.6}
+.side{display:flex;flex-direction:column;gap:12px}.panel{background:#ffffffcc;border:1px solid var(--edge);border-radius:18px;padding:14px;box-shadow:0 10px 28px #7fb4d01a}.stat{display:flex;justify-content:space-between;gap:8px;align-items:center;padding:5px 0}.stat b{font-size:22px;font-variant-numeric:tabular-nums}.stat label{font-size:12px;color:var(--muted)}.notice{color:#92732d;font-size:14px;font-weight:750;min-height:36px;margin:9px 0 0}.nextrow{display:flex;align-items:center;gap:12px}.nextrow canvas{background:linear-gradient(180deg,#3976ad,#2b6097);border:1px solid #91bee3;border-radius:12px}.small{font-size:12px;color:var(--muted);line-height:1.7}.panel h3{margin:0 0 8px;font-size:15px}select{background:#fff;border:1px solid #add2f1;color:#295277;border-radius:11px;padding:9px;width:100%;margin-top:5px;min-height:42px}#pause{width:100%;margin-top:10px}.footer{font-size:11px;color:#6b8caf;line-height:1.7;margin-top:12px}
+@media(max-width:760px){.wrap{padding:8px}.heading{padding:3px 4px}.tag{display:none}.layout{grid-template-columns:1fr;gap:9px;margin-top:7px}.stats-top{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:7px}.mini{background:#f5fbff;border:1px solid #c4e3fb;border-radius:11px;padding:6px 2px;text-align:center}.mini small{display:block;color:var(--muted);font-size:9px}.mini strong{display:block;font-size:16px}.stage{max-width:min(100%,470px)}.side{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.panel{padding:10px}.panel.config,.panel.howto,.panel.sound{grid-column:span 2}.side .mainstats{display:none}.controls{position:sticky;bottom:max(4px,env(safe-area-inset-bottom));z-index:4;padding:7px;background:#f4fbffef;border:1px solid #c0e0fb;border-radius:16px;box-shadow:0 6px 30px #8db6d333;max-width:470px;margin:7px auto 0}.controls button{min-height:49px}.controls .wide{min-height:42px}.help{font-size:11px;margin-top:4px}.dialog{max-width:340px}.footer{margin-top:14px}h1{font-size:24px}}
+@media(max-width:350px){.controls{gap:5px}.controls button{min-height:44px}.wrap{padding:5px}.dialog{padding:10px}.choice-list{gap:5px}}
+@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto}}
+input:focus-visible{outline:3px solid #2469b5;outline-offset:3px}
+.choice-list button.menu-selected{outline:3px solid #2469b5;outline-offset:2px;background:#fff1c9}
+.menu-help{font-size:11px!important}.sound output{font-weight:800}
+.stats-top,.side .mainstats,.side .next-panel{position:absolute!important;width:1px!important;height:1px!important;overflow:hidden!important;clip-path:inset(50%);padding:0!important;border:0!important}
+.stage::before,.stage::after{display:none}
+.stage{background:#d9edff}.layout{grid-template-columns:minmax(0,1fr) 260px}.stage{max-width:720px}
+@media(max-width:760px){.layout{grid-template-columns:1fr}.stage{max-width:540px}.controls{max-width:540px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="heading"><div><div class="eyebrow">ORIGINAL / CLOUD ROTATION PUZZLE</div><h1>神のお告げ <span>PROTO 03.7 WORLD ROTATION TEST</span></h1></div><div class="tag">天界に満ちる白雲の試練</div></header>
+  <div class="layout">
+    <main class="main">
+      <div class="stats-top" aria-label="ゲーム情報"><div class="mini"><small>SCORE</small><strong id="miniScore">0</strong></div><div class="mini"><small>LEVEL</small><strong id="miniLevel">1</strong></div><div class="mini"><small>LINES</small><strong id="miniLines">0</strong></div><div class="mini"><small>ANGLE</small><strong id="miniAngle">0°</strong></div></div>
+      <div class="stage">
+        <canvas id="game" tabindex="-1" width="540" height="540" aria-label="落ちものパズルの盤面"></canvas>
+        <div class="overlay" id="overlay" role="dialog" aria-modal="true" aria-labelledby="modalTitle"><div class="dialog"><h2 id="modalTitle">神のお告げ</h2><p id="modalBody">雲を積み、列を満たし、天界の試練を越えよ。<br>神託によって天界全体が回転する。<br>女神の祝福を選び、運命を切り拓け。</p><p class="menu-help" id="menuHelp">↑ ↓ 選択 ／ 1～3 直接決定 ／ Enter 決定</p><div class="choice-list" id="choices"><button class="primary" id="start">試練を開始する</button></div></div></div>
+      </div>
+      <div class="controls" aria-label="ゲーム操作">
+        <button id="left" aria-label="左へ移動">◀</button><button id="turn" aria-label="雲を回す">⟳</button><button id="right" aria-label="右へ移動">▶</button><button class="primary" id="drop" aria-label="即落下">⤓</button>
+        <button class="wide" id="down" aria-label="押している間は加速">▼ 押して加速</button><button class="wide shield" id="item" aria-label="神のお告げ防御">🛡 お告げ防御 <span id="shields">0</span></button>
+      </div>
+      <p class="help">PC：← → 移動 / ↑ 回転 / ↓ 加速 / Space 即落下 / X 防御 / P / Esc 一時停止<br>選択画面：↑ ↓ 選択 / 1～3 直接決定 / Enter 決定</p>
+    </main>
+    <aside class="side">
+      <section class="panel mainstats"><div class="stat"><label>SCORE</label><b id="score">0</b></div><div class="stat"><label>LEVEL</label><b id="level">1</b></div><div class="stat"><label>LINES</label><b id="lines">0</b></div><div class="stat"><label>角度</label><b id="angle">0°</b></div><div class="stat"><label>BEST</label><b id="best">0</b></div></section>
+      <section class="panel next-panel"><div class="nextrow"><canvas id="next" width="90" height="90" aria-label="次の雲"></canvas><div><strong>NEXT</strong><p class="small" style="margin:3px 0">次の雲塊</p></div></div><div class="notice" id="message" aria-live="polite">神託を待て。</div></section>
+      <section class="panel config"><h3>神託の強度</h3><label class="small" for="difficulty">到達段階に応じて回転角度が増大する</label><select id="difficulty"><option value="mild">やさしい（最大30°）</option><option value="normal" selected>標準（最大60°）</option><option value="wild">神の激怒（最大90°）</option></select><p class="small" id="blessingStatus">次の祝福：位階 2</p><p class="small">祝福は位階 2・3・5・8・12・17、その後は6段階ごとに授けられる。その他の昇格では試練は止まらない。</p><p class="small" id="progress">次の位階まで 500 点</p><p class="small" id="angleCap">現在の最大回転角度 ±15°</p><p class="small" id="omenStatus" aria-live="polite">神託：静穏</p><button id="rageTest" class="secondary" style="width:100%;margin-top:6px">⚡ 神の逆鱗を試験発動</button><button id="spinTest" class="secondary" style="width:100%;margin-top:6px">🌀 天輪一周を試験発動</button><p class="small">神託の守護は次の回転を一度だけ退ける。雲は白一色。紺碧の盤面にて、影と輪郭が姿を顕す。</p></section>
+      <section class="panel howto"><h3>試練の法則</h3><p class="small">白雲を横一列に満たせ。接地後も短時間の移動と回転が可能。ただし即落下は即座に固定される。神託が終われば盤面は正位置に還る。逆鱗の間は雲一つを固定するたびに角度が変わる。</p><button class="secondary" id="pause">中断 / 再開</button></section>
+      <section class="panel sound"><h3>音響</h3><label class="small" for="seVolume">効果音の音量 <output id="seValue" for="seVolume">75%</output></label><input id="seVolume" type="range" min="0" max="100" step="5" value="75" aria-label="効果音の音量" style="width:100%;accent-color:#f4c25b"><button id="muteSe" class="secondary" aria-pressed="false" style="width:100%;margin-top:6px">効果音：有効</button><button id="trySe" class="secondary" style="width:100%;margin-top:6px">効果音を試聴</button><p class="small" id="audioStatus">開始操作後に音声が有効になります。</p><p class="small">音の重なりを抑制し、出力を保護する。BGMは未実装。</p></section>
+    </aside>
+  </div>
+  <p class="footer">© 神のお告げ / 生主ルパン × ChatGPT・オリジナル試作。PROTO 03.7 WORLD ROTATION TEST。ブラウザで動作。Safari・Chrome・Edgeなどで開いてください。</p>
+</div>
+<script>
+(()=>{
+ 'use strict';
+ const W=10,H=16,S=25,CW=540,$=(id)=>document.getElementById(id);
+ const canvas=$('game'),ctx=canvas.getContext('2d'),nextCtx=$('next').getContext('2d');
+ const colors=[{fill:'#ffffff',shade:'#b5d6ee',accent:'#ffffff',edge:'#427cae'}];
+ const shapes=[[[1,1,1,1]],[[1,1],[1,1]],[[0,1,0],[1,1,1]],[[1,0,0],[1,1,1]],[[0,0,1],[1,1,1]],[[1,1,0],[0,1,1]],[[0,1,1],[1,1,0]]];
+ const audioStorageKey='kami-no-otsuge-proto036-se-settings';
+ let audioCtx=null,masterGain=null,seBus=null,bgmBus=null,seVolume=.75,seMuted=false,lastMoveTone=0;
+ try{const saved=JSON.parse(localStorage.getItem(audioStorageKey)||'{}');if(typeof saved.volume==='number'&&Number.isFinite(saved.volume))seVolume=Math.min(1,Math.max(0,saved.volume));seMuted=!!saved.muted}catch(e){}
+ function saveAudio(){try{localStorage.setItem(audioStorageKey,JSON.stringify({volume:seVolume,muted:seMuted}))}catch(e){}}
+ function updateAudioUI(){ $('seValue').textContent=Math.round(seVolume*100)+'%'; $('seVolume').value=String(Math.round(seVolume*100));$('muteSe').textContent=seMuted?'効果音：消音中':'効果音：有効';$('muteSe').setAttribute('aria-pressed',String(seMuted));if(masterGain&&audioCtx)masterGain.gain.setTargetAtTime(seMuted?0:seVolume*1.1,audioCtx.currentTime,.015) }
+ function activateAudio(){const C=window.AudioContext||window.webkitAudioContext;if(!C){$('audioStatus').textContent='このブラウザは音声生成に対応していません。';return}try{if(!audioCtx){audioCtx=new C();masterGain=audioCtx.createGain();masterGain.gain.value=seMuted?0:seVolume*1.1;seBus=masterGain;bgmBus=audioCtx.createGain();bgmBus.gain.value=.3;
+ const mix=audioCtx.createGain(),compressor=audioCtx.createDynamicsCompressor(),ceiling=audioCtx.createWaveShaper(),output=audioCtx.createGain();
+ compressor.threshold.value=-12;compressor.knee.value=12;compressor.ratio.value=8;compressor.attack.value=.003;compressor.release.value=.18;
+ const curve=new Float32Array(4097);for(let i=0;i<curve.length;i++){const x=i*2/(curve.length-1)-1;curve[i]=Math.tanh(x*1.25)/1.25}ceiling.curve=curve;
+ output.gain.value=.9;seBus.connect(mix);bgmBus.connect(mix);mix.connect(compressor);compressor.connect(ceiling);ceiling.connect(output);output.connect(audioCtx.destination)}if(audioCtx.state!=='running')audioCtx.resume().then(()=>{$('audioStatus').textContent='効果音を利用できます。'}).catch(()=>{$('audioStatus').textContent='音を出すには画面をタップしてください。'});else $('audioStatus').textContent='効果音を利用できます。'}catch(e){$('audioStatus').textContent='音声生成を開始できませんでした。'}}
+ function tone(freq,delay,dur,type='sine',level=.3,end=0.02){if(!audioCtx||audioCtx.state!=='running'||seMuted||seVolume<=0)return;const start=audioCtx.currentTime+delay;const osc=audioCtx.createOscillator(),g=audioCtx.createGain();osc.type=type;osc.frequency.setValueAtTime(Math.max(30,freq),start);osc.frequency.exponentialRampToValueAtTime(Math.max(30,freq*end),start+dur);g.gain.setValueAtTime(.0001,start);g.gain.exponentialRampToValueAtTime(Math.max(.0002,level),start+.008);g.gain.exponentialRampToValueAtTime(.0001,start+dur);osc.connect(g);g.connect(masterGain);osc.start(start);osc.stop(start+dur+.03);osc.onended=()=>{osc.disconnect();g.disconnect()}}
+ function noise(delay,dur,level=.15,cutoff=950){if(!audioCtx||audioCtx.state!=='running'||seMuted||seVolume<=0)return;const n=Math.ceil(audioCtx.sampleRate*dur),b=audioCtx.createBuffer(1,n,audioCtx.sampleRate),a=b.getChannelData(0);for(let i=0;i<n;i++)a[i]=Math.random()*2-1;const src=audioCtx.createBufferSource(),f=audioCtx.createBiquadFilter(),g=audioCtx.createGain();src.buffer=b;f.type='lowpass';f.frequency.value=cutoff;const t=audioCtx.currentTime+delay;g.gain.setValueAtTime(.0001,t);g.gain.linearRampToValueAtTime(level,t+.012);g.gain.exponentialRampToValueAtTime(.0001,t+dur);src.connect(f);f.connect(g);g.connect(masterGain);src.start(t);src.stop(t+dur+.02);src.onended=()=>{src.disconnect();f.disconnect();g.disconnect()}}
+ function sound(name){if(!audioCtx||audioCtx.state!=='running'||seMuted||seVolume<=0)return;try{switch(name){
+ case'move':if(performance.now()-lastMoveTone<75)return;lastMoveTone=performance.now();tone(440,0,.05,'sine',.13,.78);break;
+ case'turn':tone(520,0,.11,'triangle',.17,1.32);break;
+ case'land':tone(190,0,.15,'sine',.3,.46);noise(0,.1,.11,420);break;
+ case'drop':tone(240,0,.2,'triangle',.27,.28);noise(.02,.15,.18,650);break;
+ case'clear':tone(580,0,.4,'sine',.16,1.45);tone(760,.11,.43,'sine',.14,1.33);noise(.07,.44,.12,1800);break;
+ case'omen':tone(250,0,.65,'sawtooth',.13,.62);noise(.02,.55,.16,630);break;
+ case'rage':noise(0,.95,.3,460);tone(100,0,.85,'sawtooth',.24,.42);tone(65,.16,.8,'triangle',.22,.61);break;
+ case'bless':for(let i=0;i<4;i++)tone([523,659,784,1047][i],i*.1,.31,'sine',.2,.85);break;
+ case'fail':for(let i=0;i<3;i++)tone([400,310,200][i],i*.16,.28,'triangle',.2,.72);break;
+ }}catch(e){}}
+
+ const storageKey='kami-no-otsuge-proto03-cloud-best';
+ let board=empty(),piece=null,next=null,score=0,level=1,lines=0,shield=0,armed=false;
+ let phase='intro',angle=0,targetAngle=0,fallMs=680,soft=false,acc=0,last=0,noticeUntil=0,nextOmenScore=320,best=0;
+ const LOCK_DELAY=1100,MAX_LOCK_RESETS=10,OMEN_DURATION=9000,RAGE_PIECES=4;
+ let nextBlessingLevel=2,blessingGap=1;
+ let groundedMs=0,lockResets=0,wasGrounded=false,slowPieces=0;
+ let omenState='idle',omenRemaining=0,ragePieces=0,omenCount=0,fullSpin=false,clearFx=null;
+ try{best=Number(localStorage.getItem(storageKey))||0}catch(e){}
+ const maxAngle=()=>{const mode=$('difficulty').value;const cap=({mild:30,normal:60,wild:90}[mode]||60);const first=({mild:10,normal:15,wild:20}[mode]||15);return Math.min(cap,first+Math.floor((level-1)/2)*10)};
+ function empty(){return Array.from({length:H},()=>Array(W).fill(-1))}
+ function rand(n){return Math.floor(Math.random()*n)}
+ function randomPiece(){return{shape:shapes[rand(shapes.length)].map(a=>a.slice()),color:rand(colors.length),x:3,y:-1}}
+ function fits(sh,x,y){for(let j=0;j<sh.length;j++)for(let i=0;i<sh[j].length;i++)if(sh[j][i]){const xx=x+i,yy=y+j;if(xx<0||xx>=W||yy>=H||(yy>=0&&board[yy][xx]!==-1))return false}return true}
+ function isPlaying(){return phase==='playing'}
+ function update(){ $('blessingStatus').textContent=`次の祝福：位階 ${nextBlessingLevel}`;for(const [id,val] of Object.entries({score:score.toLocaleString(),level,lines,angle:`${Math.round(angle)}°`,miniScore:score.toLocaleString(),miniLevel:level,miniLines:lines,miniAngle:`${Math.round(angle)}°`,best:best.toLocaleString()})){if($(id))$(id).textContent=val}
+ $('shields').textContent=shield+(armed?' ✓':'');$('item').classList.toggle('on',armed);$('progress').textContent=`次の位階まで ${Math.max(0,level*500-score)} 点`; $('angleCap').textContent=`現在の最大回転角度 ±${maxAngle()}°（Lv.${level}）`;}
+ function note(t){$('message').textContent=t;noticeUntil=performance.now()+3200}
+ function setStatus(t){$('omenStatus').textContent=t}
+ function normalizeDegrees(a){return ((a+180)%360+360)%360-180}
+ function setRotation(deg,extraTurn=0){const current=normalizeDegrees(angle);const destination=normalizeDegrees(deg);let delta=destination-current;if(delta>180)delta-=360;if(delta<-180)delta+=360;targetAngle=angle+delta+extraTurn*360;fullSpin=extraTurn!==0}
+ function beginReturn(){omenState='returning';omenRemaining=0;ragePieces=0;setRotation(0);setStatus('神託：正位置へ復帰中');note('☁ 盤面は本来の位置へ還る。')}
+ function tickOmen(dt){if(!isPlaying())return;if(omenState==='active'){omenRemaining=Math.max(0,omenRemaining-dt);setStatus(`神託：残り ${Math.ceil(omenRemaining/1000)}秒`);if(omenRemaining<=0)beginReturn()}else if(omenState==='returning'){if(Math.abs(normalizeDegrees(targetAngle)-normalizeDegrees(angle))<1&&Math.abs(normalizeDegrees(angle))<1){angle=0;targetAngle=0;omenState='idle';fullSpin=false;setStatus('神託：静穏')}}else if(omenState==='rage'){setStatus(`⚡ 神の逆鱗：残り${Math.max(0,ragePieces)}個`)}else setStatus('神託：静穏')}
+ let menuIndex=0;
+ const heldMenuKeys=new Set();
+ function menuButtons(){return [...$('choices').querySelectorAll('button')]}
+ function selectMenu(index,focus=true){const buttons=menuButtons();menuIndex=(index+buttons.length)%buttons.length;buttons.forEach((b,i)=>b.classList.toggle('menu-selected',i===menuIndex));if(focus&&buttons[menuIndex])buttons[menuIndex].focus({preventScroll:true})}
+ $('choices').addEventListener('focusin',e=>{const index=menuButtons().indexOf(e.target);if(index>=0)selectMenu(index,false)});
+ function showDialog(title,html,choices){phase=title==='試練の終焉'?'over':title==='一時停止'?'paused':title.startsWith('LEVEL')?'choice':'intro';soft=false;acc=0;$('modalTitle').textContent=title;$('modalBody').innerHTML=html;$('choices').replaceChildren();for(const c of choices){const b=document.createElement('button');b.className=c.primary?'primary':'';b.textContent=($("choices").children.length+1)+". "+c.title;if(c.desc){const small=document.createElement('small');small.textContent=c.desc;b.append(small)}b.addEventListener('click',c.fn);$('choices').append(b)}$('overlay').classList.remove('hidden');selectMenu(0)}
+ function resume(){phase='playing';acc=0;last=performance.now();$('overlay').classList.add('hidden');$('game').focus({preventScroll:true});update()}
+ function start(){activateAudio();nextBlessingLevel=2;blessingGap=1;board=empty();score=0;level=1;lines=0;shield=0;armed=false;soft=false;angle=0;targetAngle=0;fallMs=680;next=null;nextOmenScore=320+rand(150);piece=null;groundedMs=0;lockResets=0;wasGrounded=false;slowPieces=0;omenState='idle';omenRemaining=0;ragePieces=0;omenCount=0;fullSpin=false;clearFx=null;setStatus('神託：静穏');spawn();update();note('天界の試練が始まる。');resume()}
+ function spawn(){groundedMs=0;lockResets=0;wasGrounded=false;piece=next||randomPiece();next=randomPiece();piece.x=Math.floor((W-piece.shape[0].length)/2);piece.y=-1;drawNext();if(!fits(piece.shape,piece.x,piece.y))endGame()}
+ function endGame(){sound('fail');if(score>best){best=score;try{localStorage.setItem(storageKey,String(best))}catch(e){}}update();showDialog('試練の終焉',`スコア <b>${score.toLocaleString()}</b> ／ ベスト <b>${best.toLocaleString()}</b><br>レベル ${level} ／ 消去 ${lines} 列<br><br>此度の試練は終わりを告げた。`,[{title:'再び試練に挑む',primary:true,fn:start}])}
+ function rotate(sh){return sh[0].map((_,i)=>sh.map(r=>r[i]).reverse())}
+ function afterAdjustment(){if(!piece)return;if(fits(piece.shape,piece.x,piece.y+1)){groundedMs=0;wasGrounded=false}else if(wasGrounded&&lockResets<MAX_LOCK_RESETS){groundedMs=0;lockResets++}}
+ function rotatePiece(){if(!isPlaying()||!piece||clearFx)return;const r=rotate(piece.shape);for(const dx of [0,-1,1,-2,2])if(fits(r,piece.x+dx,piece.y)){piece.shape=r;piece.x+=dx;afterAdjustment();sound('turn');return}}
+ function move(dx,dy){if(!isPlaying()||!piece||clearFx)return false;if(fits(piece.shape,piece.x+dx,piece.y+dy)){piece.x+=dx;piece.y+=dy;if(dx!==0){afterAdjustment();sound('move')}return true}return false}
+ function clearBottom(rows){const n=Math.min(rows,H);board.splice(H-n,n);for(let i=0;i<n;i++)board.unshift(Array(W).fill(-1));note(`✨ 下方${n}段の雲を浄化した。`)}
+ function spin(){sound('omen');const max=maxAngle();let n=rand(max*2+1)-max;if(Math.abs(n)<10)n=n<0?-Math.min(15,max):Math.min(15,max);omenState='active';omenRemaining=OMEN_DURATION;setRotation(n);setStatus('神託：発動中');note(`⚡ 神託発動。盤面角度 ${n>0?'+':''}${n}°`)}
+ function rageRotate(){sound('rage');const options=[-180,-135,-90,-60,60,90,135,180];let n=options[rand(options.length)];if(Math.abs(normalizeDegrees(targetAngle)-normalizeDegrees(n))<15)n=-n;setRotation(n);note(`⚡ 神の逆鱗。盤面は ${n}°へ転ずる。`)}
+ function beginRage(){if(!isPlaying()||clearFx)return;omenState='rage';ragePieces=RAGE_PIECES;omenRemaining=0;rageRotate();setStatus(`⚡ 神の逆鱗：残り${ragePieces}個`)}
+ function testFullSpin(){if(!isPlaying()||clearFx)return;sound('omen');omenState='active';omenRemaining=OMEN_DURATION;setRotation(0,1);setStatus('🌀 天輪一周を試験発動');note('🌀 天輪一周。盤面は一巡する。')}
+ function omen(){if(shield>0&&armed){shield--;armed=false;note('🛡 守護により神託を退けた。');update();return}omenCount++;if(omenCount%4===0)beginRage();else spin()}
+ function useShield(){if(!isPlaying()||shield<1)return;armed=!armed;sound('bless');note(armed?'🛡 次の神託に対する守護を施した。':'守護の待機を解除した。');update()}
+ function levelChoice(){sound('bless');const pool=[
+  {title:'💥 神の大掃除',desc:'下から3段をまとめて消去',apply:()=>clearBottom(3)},
+  {title:'🛡 神の加護',desc:'防御を3回追加し、盤面を正面に戻す',apply:()=>{shield+=3;beginReturn();note('🛡 神の加護が降り注ぐ。')}},
+  {title:'⏳ 時の祝福',desc:'次の12個の落下速度を半分にする',apply:()=>{slowPieces+=12;note('⏳ 時の祝福により雲の歩みが緩む。')}},
+  {title:'✨ 神の救済',desc:'下から2段を消去＋防御1回',apply:()=>{clearBottom(2);shield++}},
+  {title:'💰 黄金のお告げ',desc:'即座に600点獲得',apply:()=>{score+=600;note('💰 600点を獲得した。')}},
+  {title:'🌀 神との賭け',desc:'強制回転する代わりに900点＋防御1回',apply:()=>{spin();score+=900;shield++;note('🌀 神との契約が成った。900点を獲得した。')}}
+ ];const picks=[];while(picks.length<3){const p=pool[rand(pool.length)];if(!picks.includes(p))picks.push(p)}showDialog(`LEVEL ${level}！`,'授けられし祝福を、一つ選べ。',picks.map(p=>({title:p.title,desc:p.desc,fn:()=>{activateAudio();sound('bless');p.apply();update();spawn();if(phase!=='over')resume()}})))}
+ function finalizeLockProgress(wasRage){
+  if(score>best){best=score;try{localStorage.setItem(storageKey,String(best))}catch(e){}}
+  update();
+  const previousLevel=level;
+    while(score>=level*500)level++;
+    fallMs=Math.max(145,680-(level-1)*48);
+    const grantBlessing=level>=nextBlessingLevel;
+    if(grantBlessing){do{nextBlessingLevel+=blessingGap;blessingGap=Math.min(6,blessingGap+1)}while(nextBlessingLevel<=level)}
+    if(wasRage){ragePieces--;if(ragePieces<=0)beginReturn();else rageRotate()}
+    else if(score>=nextOmenScore){nextOmenScore=score+260+rand(220);omen()}
+    update();
+    if(grantBlessing){levelChoice();return}
+    if(level>previousLevel)note(`位階 ${level} に到達。試練を続行せよ。`);
+    spawn();update()
+ }
+ function beginClear(rows,gain,count,wasRage){sound('clear');if(clearFx)return;clearFx={rows:[...new Set(rows)].sort((a,b)=>b-a),timer:380,duration:380,gain,count,wasRage};piece=null;groundedMs=0;wasGrounded=false;note('☁ 雲は霧となり、天へ還る…')}
+ function finishClear(){
+  if(!clearFx)return;
+  const fx=clearFx;
+  // Complete the board update atomically BEFORE any modal or next piece can open.
+  // Recheck the actual board instead of trusting a stale animation snapshot.
+  const kept=board.filter(row=>row.some(c=>c===-1));
+  const removed=H-kept.length;
+  board=[...Array.from({length:removed},()=>Array(W).fill(-1)),...kept];
+  if(removed){
+   lines+=removed;
+   const gain=[0,100,260,450,700][Math.min(removed,4)]*level;
+   score+=gain;
+   note(`${removed}列の雲が霧散した。 +${gain}点`);
+  }
+  clearFx=null;
+  finalizeLockProgress(fx.wasRage)
+ }
+ function tickClear(dt){if(!isPlaying()||!clearFx)return;clearFx.timer=Math.max(0,clearFx.timer-dt);if(clearFx.timer<=0)finishClear()}
+
+ function drawCloudCell(context, style, x, y, size, alpha=1, active=false){
+ context.save();context.globalAlpha=alpha;
+ const puff=(px,py,r)=>{context.beginPath();context.arc(px,py,r,0,Math.PI*2);context.fill();context.stroke()};
+ const cx=x+size/2,cy=y+size/2,b=Math.max(4,size*.23);
+ context.fillStyle=style.fill;context.strokeStyle=active?'#f4c25b':style.edge;context.lineWidth=active?Math.max(1.8,size*.095):Math.max(1.3,size*.07);
+ context.shadowColor=active?'rgba(255,231,155,.8)':'rgba(8,49,90,.48)';context.shadowBlur=active?size*.3:size*.16;context.shadowOffsetY=active?0:size*.06;
+ puff(cx-size*.18,cy+size*.07,b*1.05);puff(cx,cy-size*.02,b*1.18);puff(cx+size*.2,cy+size*.06,b);puff(cx-size*.02,cy+size*.2,b*1.06);
+ context.beginPath();context.ellipse(cx,cy+size*.1,size*.36,size*.22,0,0,Math.PI*2);context.fill();context.stroke();
+ context.shadowBlur=0;context.shadowOffsetY=0;
+ context.beginPath();context.fillStyle=style.shade;context.ellipse(cx,cy+size*.22,size*.28,size*.12,0,0,Math.PI*2);context.fill();
+ context.beginPath();context.fillStyle=style.accent;context.ellipse(cx-size*.06,cy-size*.02,size*.18,size*.08,-.2,0,Math.PI*2);context.fill();context.restore()
+ }
+ function drawGhostCell(context,x,y,size){
+ context.save();context.strokeStyle='rgba(227,247,255,.92)';context.lineWidth=2;context.setLineDash([3,3]);
+ context.beginPath();context.roundRect(x+3,y+3,size-6,size-6,size*.35);context.stroke();context.restore()
+ }
+ function drawNext(){nextCtx.clearRect(0,0,90,90);if(!next)return;const sh=next.shape,z=19,x=(90-sh[0].length*z)/2,y=(90-sh.length*z)/2;for(let j=0;j<sh.length;j++)for(let i=0;i<sh[j].length;i++)if(sh[j][i])drawCloudCell(nextCtx,colors[next.color],x+i*z,y+j*z,z,1)}
+ function lock(hard=false){if(!isPlaying()||!piece||clearFx)return;sound(hard?'drop':'land');if(slowPieces>0)slowPieces--;const wasRage=omenState==='rage';for(let j=0;j<piece.shape.length;j++)for(let i=0;i<piece.shape[j].length;i++)if(piece.shape[j][i]){const y=piece.y+j,x=piece.x+i;if(y<0){endGame();return}board[y][x]=piece.color}const clearRows=[];for(let y=H-1;y>=0;y--)if(board[y].every(c=>c!==-1))clearRows.push(y);if(clearRows.length){const gain=[0,100,260,450,700][Math.min(clearRows.length,4)]*level;beginClear(clearRows,gain,clearRows.length,wasRage)}else{score+=8;finalizeLockProgress(wasRage)}}
+ function hardDrop(){if(!isPlaying()||!piece||clearFx)return;let distance=0;while(fits(piece.shape,piece.x,piece.y+1)){piece.y++;distance++}score+=distance*2;lock(true)}
+ // Board, NEXT, counters and notices share this one world transform.
+ function sceneScale(degrees){const radians=degrees*Math.PI/180;return 516/(CW*(Math.abs(Math.cos(radians))+Math.abs(Math.sin(radians))))}
+ function drawHud(){
+   ctx.textAlign='left';ctx.fillStyle='#173e67';ctx.font='bold 18px system-ui';ctx.fillText('神のお告げ',26,31);
+   ctx.textAlign='right';ctx.font='bold 14px system-ui';ctx.fillText(`神の角度 ${Math.round(angle)}°`,514,31);
+   ctx.fillStyle='#f6fbfff2';ctx.fillRect(334,56,180,420);ctx.strokeStyle='#8bbbe1';ctx.lineWidth=1;ctx.strokeRect(334,56,180,420);
+   ctx.textAlign='left';ctx.fillStyle='#45698c';ctx.font='bold 16px system-ui';ctx.fillText('NEXT / 次の雲',348,80);
+   ctx.fillStyle='#316da4';ctx.fillRect(348,91,152,88);
+   if(next){const sh=next.shape,z=23,x=424-sh[0].length*z/2,y=135-sh.length*z/2;for(let j=0;j<sh.length;j++)for(let i=0;i<sh[j].length;i++)if(sh[j][i])drawCloudCell(ctx,colors[next.color],x+i*z,y+j*z,z,1)}
+   const values=[['SCORE',score.toLocaleString()],['LEVEL',String(level)],['LINES',String(lines)],['BEST',best.toLocaleString()]];
+   values.forEach(([label,value],i)=>{const y=204+i*52;ctx.fillStyle='#55799a';ctx.font='bold 13px system-ui';ctx.fillText(label,348,y);ctx.fillStyle='#163e66';ctx.font='bold 25px system-ui';ctx.fillText(value,348,y+27,152)});
+   ctx.fillStyle=armed?'#33734d':'#45698c';ctx.font='bold 14px system-ui';ctx.fillText(`守護 ${shield}${armed?' / 待機中':''}`,348,433);
+   ctx.fillStyle='#715b2d';ctx.font='bold 14px system-ui';ctx.fillText(`次の祝福 Lv.${nextBlessingLevel}`,348,458);
+   ctx.textAlign='center';ctx.fillStyle='#244f77';ctx.font='bold 13px system-ui';ctx.fillText($('omenStatus').textContent,270,497,488);
+   ctx.fillStyle='#795d25';ctx.font='bold 14px system-ui';ctx.fillText($('message').textContent,270,523,488);
+ }
+ function draw(t){const dt=last?Math.min(60,t-last):0;last=t;const easing=1-Math.exp(-dt/(fullSpin?320:175));angle+=(targetAngle-angle)*easing;if(Math.abs(targetAngle-angle)<0.08){angle=targetAngle;if(fullSpin){angle=normalizeDegrees(angle);targetAngle=angle;fullSpin=false}}tickOmen(dt);if(isPlaying())tickClear(dt);ctx.clearRect(0,0,CW,CW);
+ const theta=angle*Math.PI/180,scale=sceneScale(angle);
+ ctx.save();ctx.translate(CW/2,CW/2);ctx.rotate(theta);ctx.scale(scale,scale);ctx.translate(-CW/2,-CW/2);
+ const sky=ctx.createLinearGradient(0,0,0,CW);sky.addColorStop(0,'#7fc7ff');sky.addColorStop(.55,'#bce5ff');sky.addColorStop(1,'#effaff');ctx.fillStyle=sky;ctx.fillRect(0,0,CW,CW);ctx.fillStyle='#ffffff88';ctx.beginPath();ctx.ellipse(88,62,48,18,0,0,Math.PI*2);ctx.ellipse(118,58,36,15,0,0,Math.PI*2);ctx.fill();ctx.beginPath();ctx.ellipse(420,88,52,20,0,0,Math.PI*2);ctx.ellipse(454,83,34,14,0,0,Math.PI*2);ctx.fill();ctx.save();ctx.translate(CW/2,CW/2);ctx.strokeStyle='#ffffff66';for(let r=100;r<=240;r+=40){ctx.beginPath();ctx.arc(0,0,r,0,Math.PI*2);ctx.stroke()}ctx.restore();
+ ctx.save();ctx.translate(62,70);
+ const boardGrad=ctx.createLinearGradient(0,0,0,H*S);boardGrad.addColorStop(0,'#3d79b2');boardGrad.addColorStop(1,'#245b92');ctx.fillStyle=boardGrad;ctx.fillRect(-8,-8,W*S+16,H*S+16);ctx.strokeStyle='#bfeaff';ctx.lineWidth=3;ctx.strokeRect(-6,-6,W*S+12,H*S+12);
+ for(let y=0;y<H;y++)for(let x=0;x<W;x++){ctx.fillStyle=(x+y)%2?'#417fb7':'#3672a9';ctx.fillRect(x*S,y*S,S,S);ctx.strokeStyle='rgba(215,239,255,.19)';ctx.lineWidth=1;ctx.strokeRect(x*S+.5,y*S+.5,S-1,S-1);if(board[y][x]!==-1){let alpha=1;if(clearFx&&clearFx.rows.includes(y))alpha=Math.max(.08,clearFx.timer/clearFx.duration);drawCloudCell(ctx,colors[board[y][x]],x*S,y*S,S+1,alpha)}}
+ if(clearFx){const fade=1-clearFx.timer/clearFx.duration;for(const row of clearFx.rows){for(let p=0;p<7;p++){const px=18+p*34+(p%2)*8;const py=row*S+S*0.55;ctx.beginPath();ctx.fillStyle=`rgba(255,255,255,${0.18+fade*0.32})`;ctx.ellipse(px+fade*10,py,12+fade*8,6+fade*3,0,0,Math.PI*2);ctx.fill();}}}
+ if(piece&&phase!=='over'){let ghostY=piece.y;while(fits(piece.shape,piece.x,ghostY+1))ghostY++;for(let j=0;j<piece.shape.length;j++)for(let i=0;i<piece.shape[j].length;i++)if(piece.shape[j][i]){if(ghostY+j>=0&&ghostY!==piece.y)drawGhostCell(ctx,(piece.x+i)*S,(ghostY+j)*S,S);if(piece.y+j>=0)drawCloudCell(ctx,colors[piece.color],(piece.x+i)*S,(piece.y+j)*S,S+1,1,true)}}
+ ctx.fillStyle='#f7cf76';ctx.fillRect(W*S/2-23,-12,46,6);ctx.fillStyle='#7a6130';ctx.textAlign='center';ctx.font='bold 13px system-ui';ctx.fillText('雲の入口',W*S/2,-19);ctx.restore();
+ drawHud();ctx.restore();if(isPlaying()&&piece&&!clearFx){acc+=dt;const gravity=slowPieces>0?fallMs*2:fallMs;const interval=soft?Math.max(35,gravity/11):gravity;if(acc>=interval){acc=0;move(0,1)}if(piece&&!fits(piece.shape,piece.x,piece.y+1)){if(!wasGrounded){wasGrounded=true;groundedMs=0}else groundedMs+=dt;if(groundedMs>=LOCK_DELAY)lock()}else{wasGrounded=false;groundedMs=0}}if(t>noticeUntil&&phase==='playing'&&omenState==='idle'&&!clearFx&&$('message').textContent!=='神託を待て。')$('message').textContent='神託を待て。';updateAngleOnly();requestAnimationFrame(draw)}
+ function updateAngleOnly(){const a=`${Math.round(angle)}°`;if($('angle').textContent!==a)$('angle').textContent=a;if($('miniAngle').textContent!==a)$('miniAngle').textContent=a}
+ function bindRepeat(id,fn){const el=$(id);let timeout=null,interval=null;const stop=()=>{clearTimeout(timeout);clearInterval(interval);timeout=interval=null};el.addEventListener('pointerdown',e=>{if(e.button!==0&&e.pointerType==='mouse')return;e.preventDefault();stop();fn();timeout=setTimeout(()=>{interval=setInterval(fn,90)},240)});for(const event of ['pointerup','pointercancel','pointerleave'])el.addEventListener(event,stop);window.addEventListener('blur',stop)}
+ bindRepeat('left',()=>move(-1,0));bindRepeat('right',()=>move(1,0));bindRepeat('turn',rotatePiece);
+ $('drop').addEventListener('pointerdown',e=>{e.preventDefault();hardDrop()});$('item').addEventListener('pointerdown',e=>{e.preventDefault();useShield()});$('down').addEventListener('pointerdown',e=>{e.preventDefault();if(isPlaying())soft=true});for(const event of ['pointerup','pointercancel','pointerleave'])$('down').addEventListener(event,()=>{soft=false});window.addEventListener('blur',()=>{soft=false;if(isPlaying())pauseGame()});
+ window.addEventListener('keydown',e=>{
+ const code=e.code;
+ if(heldMenuKeys.has(code)){e.preventDefault();return}
+ if(!$('overlay').classList.contains('hidden')){
+   const buttons=menuButtons(),digit=/^(?:Digit|Numpad)([1-3])$/.exec(code);
+   if(['ArrowUp','ArrowDown','ArrowLeft','ArrowRight','Enter','NumpadEnter','Space','Tab','KeyP','Escape','KeyX'].includes(code)||digit){
+     e.preventDefault();if(e.repeat)return;
+     if(code==='ArrowUp'||code==='ArrowDown'||code==='Tab'){selectMenu(menuIndex+((code==='ArrowUp'||(code==='Tab'&&e.shiftKey))?-1:1));return}
+     heldMenuKeys.add(code);activateAudio();
+     if(digit){const button=buttons[Number(digit[1])-1];if(button)button.click()}
+     else if(['Enter','NumpadEnter','Space'].includes(code)){buttons[menuIndex]?.click()}
+     else if((code==='KeyP'||code==='Escape')&&phase==='paused')resume();
+   }
+   return;
+ }
+ if(e.target.closest('input,select,textarea,button'))return;
+ if(['ArrowLeft','ArrowRight','ArrowUp','ArrowDown','Space','KeyP','Escape'].includes(code))e.preventDefault();
+ if(code==='KeyP'||code==='Escape'){if(!e.repeat){heldMenuKeys.add(code);togglePause()}return}
+ if(!isPlaying())return;
+ if(code==='ArrowDown'){soft=true;return}
+ if(e.repeat&&['ArrowUp','Space','KeyX'].includes(code))return;
+ switch(code){case'ArrowLeft':move(-1,0);break;case'ArrowRight':move(1,0);break;case'ArrowUp':rotatePiece();break;case'Space':hardDrop();break;case'KeyX':useShield();break}
+ });
+ window.addEventListener('keyup',e=>{heldMenuKeys.delete(e.code);if(e.code==='ArrowDown')soft=false});
+ window.addEventListener('blur',()=>heldMenuKeys.clear());
+ function pauseGame(){if(!isPlaying())return;showDialog('一時停止','時は止まった。再開の意志を示せ。',[{title:'試練へ戻る',primary:true,fn:resume},{title:'最初から試練を受ける',fn:start}])}
+ function togglePause(){if(isPlaying())pauseGame();else if(phase==='paused')resume()}
+ $('pause').addEventListener('click',togglePause);
+ $('difficulty').addEventListener('change',()=>{const m=maxAngle();if(omenState==='active')setRotation(Math.max(-m,Math.min(m,normalizeDegrees(targetAngle))));note(`回転上限：最大 ±${m}°`)});
+ $('rageTest').addEventListener('click',()=>{if(isPlaying())beginRage();else note('試練開始後に発動できる。')});
+ $('spinTest').addEventListener('click',()=>{if(isPlaying())testFullSpin();else note('試練開始後に発動できる。')});
+ document.addEventListener('visibilitychange',()=>{if(document.hidden&&isPlaying())pauseGame()});
+ $('seVolume').addEventListener('input',e=>{seVolume=Math.max(0,Math.min(1,Number(e.target.value)/100));activateAudio();updateAudioUI();saveAudio()});
+ $('muteSe').addEventListener('click',()=>{activateAudio();seMuted=!seMuted;updateAudioUI();saveAudio();if(!seMuted&&audioCtx)audioCtx.resume().then(()=>sound('turn')).catch(()=>{})});
+ $('trySe').addEventListener('click',()=>{activateAudio();if(audioCtx)audioCtx.resume().then(()=>sound('clear')).catch(()=>{})});
+ document.addEventListener('pointerdown',activateAudio,{passive:true});
+ selectMenu(0);updateAudioUI();$('start').addEventListener('click',start);drawNext();update();requestAnimationFrame(draw);
+ window.__kamiTest={getState:()=>({phase,score,level,lines,angle,targetAngle,best,shield,maxAngle:maxAngle(),nextBlessingLevel,groundedMs,lockResets,slowPieces,omenState,omenRemaining,ragePieces,piece:piece&&{x:piece.x,y:piece.y},board:board.map(r=>r.slice()),clearFx:clearFx&&{rows:[...clearFx.rows],timer:clearFx.timer}}),omen,hardDrop,start,pause:togglePause,beginRage,beginReturn,setRotation,testFullSpin};
+})();
+</script>
+</body>
+</html>
