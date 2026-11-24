@@ -40,7 +40,7 @@ input:focus-visible{outline:3px solid #2469b5;outline-offset:3px}
       <div class="stats-top" aria-label="ゲーム情報"><div class="mini"><small>SCORE</small><strong id="miniScore">0</strong></div><div class="mini"><small>LEVEL</small><strong id="miniLevel">1</strong></div><div class="mini"><small>LINES</small><strong id="miniLines">0</strong></div><div class="mini"><small>ANGLE</small><strong id="miniAngle">0°</strong></div></div>
       <div class="stage">
         <canvas id="game" tabindex="-1" width="540" height="540" aria-label="落ちものパズルの盤面"></canvas>
-        <div class="overlay" id="overlay" role="dialog" aria-modal="true" aria-labelledby="modalTitle"><div class="dialog"><h2 id="modalTitle">神のお告げ</h2><p id="modalBody">雲を積み、列を満たし、天界の試練を越えよ。<br>神託によって天界全体が回転する。<br>女神の祝福を選び、運命を切り拓け。</p><div id="menuFields" hidden><label for="gameMode">試練の形式</label><select id="gameMode"><option value="endless">通常 — 終わりなき試練</option><option value="puzzle">ぐちゃぐちゃ — 盤面を全消し</option></select><label for="difficulty">難易度</label><select id="difficulty"><option value="mild">神の代理（やさしい）</option><option value="normal" selected>主神の試練（標準）</option><option value="wild">神の逆鱗（むずかしい）</option><option value="random">難易度ランダム</option></select></div><div id="settingsHost" hidden></div><p class="menu-help" id="menuHelp">↑ ↓ 選択 ／ 1～3 直接決定 ／ Enter 決定</p><div class="choice-list" id="choices"><button class="primary" id="start">1. 試練を開始する</button><button id="listenOpening">2. 序曲を聴く</button></div></div></div>
+        <div class="overlay" id="overlay" role="dialog" aria-modal="true" aria-labelledby="modalTitle"><div class="dialog"><h2 id="modalTitle">神のお告げ</h2><p id="modalBody">雲を積み、列を満たし、天界の試練を越えよ。<br>神託によって天界全体が回転する。<br>女神の祝福を選び、運命を切り拓け。</p><div id="menuFields" hidden><label for="gameMode">試練の形式</label><select id="gameMode"><option value="endless">通常 — 終わりなき試練</option><option value="puzzle">混沌の試練 — 盤面を全消し</option></select><label for="difficulty">難易度</label><select id="difficulty"><option value="mild">神の代理（やさしい）</option><option value="normal" selected>主神の試練（標準）</option><option value="wild">神の逆鱗（むずかしい）</option><option value="random">難易度ランダム</option></select></div><div id="settingsHost" hidden></div><p class="menu-help" id="menuHelp">↑ ↓ 選択 ／ 1～3 直接決定 ／ Enter 決定</p><div class="choice-list" id="choices"><button class="primary" id="start">1. 試練を開始する</button><button id="listenOpening">2. 序曲を聴く</button></div></div></div>
       </div>
       <div class="controls" aria-label="ゲーム操作">
         <button id="left" aria-label="左へ移動">◀</button><button id="turn" aria-label="雲を回す">⟳</button><button id="right" aria-label="右へ移動">▶</button><button class="primary" id="drop" aria-label="即落下">⤓</button>
@@ -198,7 +198,7 @@ input:focus-visible{outline:3px solid #2469b5;outline-offset:3px}
  }
  function fits(sh,x,y){for(let j=0;j<sh.length;j++)for(let i=0;i<sh[j].length;i++)if(sh[j][i]){const xx=x+i,yy=y+j;if(xx<0||xx>=W||yy>=H||(yy>=0&&board[yy][xx]!==-1))return false}return true}
  function isPlaying(){return phase==='playing'}
- function update(){ $('runInfo').textContent=(gameMode==='puzzle'?'全消しの試練':'終わりなき試練')+' ／ '+difficultyName(runDifficulty); $('blessingStatus').textContent=`次の祝福：位階 ${nextBlessingLevel}`;for(const [id,val] of Object.entries({score:score.toLocaleString(),level,lines,angle:`${Math.round(angle)}°`,miniScore:score.toLocaleString(),miniLevel:level,miniLines:lines,miniAngle:`${Math.round(angle)}°`,best:best.toLocaleString()})){if($(id))$(id).textContent=val}
+ function update(){ $('runInfo').textContent=(gameMode==='puzzle'?'混沌の試練':'終わりなき試練')+' ／ '+difficultyName(runDifficulty); $('blessingStatus').textContent=`次の祝福：位階 ${nextBlessingLevel}`;for(const [id,val] of Object.entries({score:score.toLocaleString(),level,lines,angle:`${Math.round(angle)}°`,miniScore:score.toLocaleString(),miniLevel:level,miniLines:lines,miniAngle:`${Math.round(angle)}°`,best:best.toLocaleString()})){if($(id))$(id).textContent=val}
  $('shields').textContent=shield+(armed?' ✓':'');$('item').classList.toggle('on',armed);$('progress').textContent=`次の位階まで ${Math.max(0,level*500-score)} 点`; $('angleCap').textContent=`現在の最大回転角度 ±${maxAngle()}°（Lv.${level}）`;}
  function note(t){$('message').textContent=t;noticeUntil=performance.now()+3200}
  function setStatus(t){$('omenStatus').textContent=t}
@@ -236,7 +236,7 @@ input:focus-visible{outline:3px solid #2469b5;outline-offset:3px}
  function allClear(){return gameMode==='puzzle'&&board.every(row=>row.every(cell=>cell===-1))}
  function showIntro(){
   stopBgm(true);
-  showDialog('神のお告げ','<img class="result-art" src="assets/clear-god.png" alt="雲上から試練へ迎える神">試練の形式と難易度を選べ。<br>通常は限界まで、全消しは盤上の雲を残さず消せ。',[
+  showDialog('神のお告げ','<img class="result-art" src="assets/clear-god.png" alt="雲上から試練へ迎える神">試練の形式と難易度を選べ。<br>終わりなき試練：己の限界に挑め。<br>混沌の試練：乱れし雲を払い、天界に静寂を取り戻せ。',[
    {title:'試練を開始する',primary:true,fn:start},
    {title:'設定',fn:()=>openSettings('intro')},
    {title:'序曲を聴く',fn:()=>{activateAudio();syncBgm()}}
@@ -250,7 +250,7 @@ input:focus-visible{outline:3px solid #2469b5;outline-offset:3px}
   update();const title=cleared?'試練の達成':'試練の終焉';
   const art=cleared?'assets/clear-god.png':'assets/gameover-god.png';
   const text=cleared?'すべての雲は晴れた。見事、試練を越えた。':'此度の試練、しかと見届けた。';
-  showDialog(title,`<img class="result-art" src="${art}" alt="${cleared?'微笑み、祝福を授ける神':'静かに試練を見届ける神'}"><span class="result-score">SCORE ${score.toLocaleString()}</span><br>${text}<br>プレイありがとうございました。<br><span class="result-caption">${gameMode==='puzzle'?'全消し':'通常'} ／ ${difficultyName(runDifficulty)} ／ Lv.${level} ／ ${lines}列<br>この端末のベスト：${best.toLocaleString()}</span>`,[
+  showDialog(title,`<img class="result-art" src="${art}" alt="${cleared?'微笑み、祝福を授ける神':'静かに試練を見届ける神'}"><span class="result-score">SCORE ${score.toLocaleString()}</span><br>${text}<br>プレイありがとうございました。<br><span class="result-caption">${gameMode==='puzzle'?'混沌の試練':'終わりなき試練'} ／ ${difficultyName(runDifficulty)} ／ Lv.${level} ／ ${lines}列<br>この端末のベスト：${best.toLocaleString()}</span>`,[
    {title:'同じ形式で再挑戦',primary:true,fn:start},
    {title:'スタートメニューへ',fn:showIntro},
    {title:'終曲を再び聴く',fn:()=>{stopBgm(true);activateAudio();syncBgm()}}
