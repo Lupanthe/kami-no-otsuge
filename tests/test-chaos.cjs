@@ -22,7 +22,7 @@ function node(){const n={gain:param(),frequency:param(),threshold:param(),knee:p
 window.AudioContext=class{constructor(){this.state='running';this.currentTime=0;this.sampleRate=44100;this.destination=node()}resume(){return Promise.resolve()}createGain(){return node()}createDynamicsCompressor(){return node()}createWaveShaper(){return node()}createOscillator(){return node()}createBiquadFilter(){return node()}createBufferSource(){return node()}createBuffer(c,n,rate=44100){const data=new Float32Array(n);return{duration:n/rate,sampleRate:rate,getChannelData:()=>data}}};
 const context={Math,window,document,localStorage:{getItem:k=>saved.get(k),setItem:(k,v)=>saved.set(k,v)},performance:{now:()=>1000},requestAnimationFrame(){},setTimeout,clearTimeout,setInterval,clearInterval,console};
 let script=html.match(/<script>([\s\S]*?)<\/script>/)[1];
-script=script.replace('window.__kamiTest={','window.__qa={showIntro,openSettings,clearGame,randomPiece,setupPuzzle,setBoard(b){board=b},placeX(x){piece.x=x},fillTop(){board[0].fill(0)},drawCloudKeeper,makeCue,syncBgm,bgm:()=>({bgmVolume,bgmMuted,bgmSource,bgmBuffer,bgmBus,bgmOffset,audioCtx,musicKind,bgmFinished}),sceneOffset,sceneScale,draw,finalizeLockProgress,setScore(v){score=v},levelChoice,endGame,tickClear,setupClear(){board=empty();board[15].fill(0);score=490;beginClear([15],100,1,false)},audio:()=>({seVolume,seMuted,masterGain}),soft:()=>soft};window.__kamiTest={');
+script=script.replace('window.__kamiTest={','window.__qa={showIntro,openSettings,clearGame,godSpeech,randomPiece,setupPuzzle,setBoard(b){board=b},placeX(x){piece.x=x},fillTop(){board[0].fill(0)},drawCloudKeeper,makeCue,syncBgm,bgm:()=>({bgmVolume,bgmMuted,bgmSource,bgmBuffer,bgmBus,bgmOffset,audioCtx,musicKind,bgmFinished}),sceneOffset,sceneScale,draw,finalizeLockProgress,setScore(v){score=v},levelChoice,endGame,tickClear,setupClear(){board=empty();board[15].fill(0);score=490;beginClear([15],100,1,false)},audio:()=>({seVolume,seMuted,masterGain}),soft:()=>soft};window.__kamiTest={');
 vm.runInNewContext(script,context);
 const state=()=>window.__kamiTest.getState(),qa=window.__qa;
 function key(code,repeat=false){window.emit('keydown',{code,repeat,target:document.activeElement||els.game})}
@@ -75,3 +75,17 @@ els.gameMode.value='puzzle';press('Digit1');qa.fillTop();window.__kamiTest.hardD
 qa.showIntro();els.gameMode.value='endless';els.difficulty.value='normal';press('Digit1');assert.ok(state().board.every(r=>r.every(c=>c===-1)));
 qa.setupClear();qa.tickClear(500);assert.equal(state().phase,'choice');press('Digit1');assert.equal(state().phase,'playing');
 console.log('PASS: menu keyboard/Tab, settings round-trip and stored audio, endless does not clear, random difficulty fixed per run, 300 varied chaos boards, seven-piece bags, final-clear transitions, puzzle top-out, result art/score/thanks, mode restart, legacy line-clear choice.');
+
+
+for(const mode of ['mild','normal','wild']){
+ qa.showIntro();els.difficulty.value=mode;els.difficulty.emit('change');
+ assert.ok(els.modalBody.innerHTML.includes(qa.godSpeech('intro',mode)));
+ els.gameMode.value='endless';press('Digit1');
+ qa.endGame();assert.ok(els.modalBody.innerHTML.includes(qa.godSpeech('over',mode)));
+ qa.clearGame();assert.ok(els.modalBody.innerHTML.includes(qa.godSpeech('clear',mode)));
+}
+qa.showIntro();els.difficulty.value='random';els.difficulty.emit('change');
+assert.match(els.modalBody.innerHTML,/まだ定まらぬ/);
+press('Digit1');const selected=state().runDifficulty;
+qa.endGame();assert.ok(els.modalBody.innerHTML.includes(qa.godSpeech('over',selected)));
+console.log('PASS: entrance change, proxy/main dialogue, clear/over, resolved random speaker');
