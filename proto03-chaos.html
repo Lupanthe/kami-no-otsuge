@@ -28,6 +28,7 @@ input:focus-visible{outline:3px solid #2469b5;outline-offset:3px}
 .dialog{width:min(94vw,540px);max-width:540px;max-height:calc(100dvh - 32px);text-align:center}
 #menuFields{text-align:left;margin:12px 0}#menuFields label{display:block;font-size:13px;font-weight:700;margin-top:10px}
 [hidden]{display:none!important}#settingsDock{display:none}#settingsHost .panel{box-shadow:none;border:0;padding:0;text-align:left}
+.god-speech{display:block;padding:10px 12px;margin:8px 0;border-left:3px solid #c5a05b;background:#fff8e9;color:#344e63;line-height:1.7;text-align:left}
 .result-art{display:block;width:100%;aspect-ratio:16/9;object-fit:cover;border-radius:12px;margin:8px 0}
 .result-score{font-size:22px;font-weight:800;color:#214267}.result-caption{font-size:12px}
 </style>
@@ -213,7 +214,7 @@ input:focus-visible{outline:3px solid #2469b5;outline-offset:3px}
  $('choices').addEventListener('focusin',e=>{const index=menuButtons().indexOf(e.target);if(index>=0)selectMenu(index,false)});
  function showDialog(title,html,choices,dialogPhase=null){$('settingsDock').append($('audioPanel'));$('settingsHost').hidden=true;$('menuFields').hidden=true;phase=dialogPhase||(title==='試練の終焉'?'over':title==='一時停止'?'paused':title.startsWith('LEVEL')?'choice':'intro');soft=false;acc=0;$('modalTitle').textContent=title;$('modalBody').innerHTML=html;$('choices').replaceChildren();for(const c of choices){const b=document.createElement('button');b.className=c.primary?'primary':'';b.textContent=($("choices").children.length+1)+". "+c.title;if(c.desc){const small=document.createElement('small');small.textContent=c.desc;b.append(small)}b.addEventListener('click',c.fn);$('choices').append(b)}$('overlay').classList.remove('hidden');selectMenu(0);syncBgm()}
  function resume(){phase='playing';syncBgm();acc=0;last=performance.now();$('overlay').classList.add('hidden');$('game').focus({preventScroll:true});update()}
- function start(){gameMode=$('gameMode').value;runDifficulty=$('difficulty').value==='random'?['mild','normal','wild'][rand(3)]:$('difficulty').value;storageKey=`kami-no-otsuge-chaos-best-${gameMode}-${runDifficulty}`;try{best=Number(localStorage.getItem(storageKey))||0}catch(e){best=0}activateAudio();stopBgm(true);nextBlessingLevel=2;blessingGap=1;board=empty();score=0;level=1;lines=0;shield=0;armed=false;soft=false;angle=0;targetAngle=0;fallMs=680;next=null;nextOmenScore=320+rand(150);piece=null;groundedMs=0;lockResets=0;wasGrounded=false;slowPieces=0;omenState='idle';omenRemaining=0;ragePieces=0;omenCount=0;fullSpin=false;clearFx=null;setStatus('神託：静穏');if(gameMode==='puzzle')setupPuzzle();spawn();update();note('天界の試練が始まる。');resume()}
+ function start(){gameMode=$('gameMode').value;runDifficulty=$('difficulty').value==='random'?['mild','normal','wild'][rand(3)]:$('difficulty').value;storageKey=`kami-no-otsuge-chaos-best-${gameMode}-${runDifficulty}`;try{best=Number(localStorage.getItem(storageKey))||0}catch(e){best=0}activateAudio();stopBgm(true);nextBlessingLevel=2;blessingGap=1;board=empty();score=0;level=1;lines=0;shield=0;armed=false;soft=false;angle=0;targetAngle=0;fallMs=680;next=null;nextOmenScore=320+rand(150);piece=null;groundedMs=0;lockResets=0;wasGrounded=false;slowPieces=0;omenState='idle';omenRemaining=0;ragePieces=0;omenCount=0;fullSpin=false;clearFx=null;setStatus('神託：静穏');if(gameMode==='puzzle')setupPuzzle();spawn();update();note(godSpeech('intro'));resume()}
  function spawn(){godReleaseMs=650;groundedMs=0;lockResets=0;wasGrounded=false;piece=next||randomPiece();next=randomPiece();piece.x=Math.floor((W-piece.shape[0].length)/2);piece.y=-1;drawNext();if(!fits(piece.shape,piece.x,piece.y))endGame()}
 
  function difficultyName(mode){return {mild:'神の代理',normal:'主神の試練',wild:'神の逆鱗'}[mode]||'主神の試練'}
@@ -234,9 +235,16 @@ input:focus-visible{outline:3px solid #2469b5;outline-offset:3px}
   if(occupied%2)for(let x=0;x<W;x++)if(board[H-1][x]!==-1){board[H-1][x]=-1;break}
  }
  function allClear(){return gameMode==='puzzle'&&board.every(row=>row.every(cell=>cell===-1))}
+ const godLines={
+  mild:{name:'神の代理',intro:'主神に代わり、私が見届けよう。雲を整えてくれ。無理はせずともよい。',clear:'よく務めてくれた。天界も晴れたことだ。主神が戻らぬうちに、休むとよい。',over:'ここまででよい。残りは私が引き受けよう。そなたも、しばし休まれよ。'},
+  normal:{name:'主神',intro:'雲が増えすぎた。少し、整えてはくれぬか。',clear:'見事である。……さて、もう一度。',over:'おや、もう限界か。時を忘れてしまった。なかなか愉快であったぞ。'},
+  wild:{name:'主神',intro:'そなたの腕前、見せてもらおう。天を回せば、いっそう興が乗るであろう。',clear:'この試練さえ越えるか。見事である。次は、もう少し天を回すとしよう。',over:'少々、興が乗りすぎたか。案ずるな。雲なら、まだ幾らでもある。'}
+ };
+ function godSpeech(event,difficulty=runDifficulty){const god=godLines[difficulty];return god?god.name+'「'+god[event]+'」':'神託を待て。此度の試練を司る者は、まだ定まらぬ。'}
+ function introBody(){return '<img class="result-art" src="assets/clear-god.png" alt="雲上から試練へ迎える神"><span class="god-speech">'+godSpeech('intro',$('difficulty').value)+'</span><br>試練の形式と難易度を選べ。<br>終わりなき試練：己の限界に挑め。<br>混沌の試練：乱れし雲を払い、天界に静寂を取り戻せ。'}
  function showIntro(){
   stopBgm(true);
-  showDialog('神のお告げ','<img class="result-art" src="assets/clear-god.png" alt="雲上から試練へ迎える神">試練の形式と難易度を選べ。<br>終わりなき試練：己の限界に挑め。<br>混沌の試練：乱れし雲を払い、天界に静寂を取り戻せ。',[
+  showDialog('神のお告げ',introBody(),[
    {title:'試練を開始する',primary:true,fn:start},
    {title:'設定',fn:()=>openSettings('intro')},
    {title:'序曲を聴く',fn:()=>{activateAudio();syncBgm()}}
@@ -249,7 +257,7 @@ input:focus-visible{outline:3px solid #2469b5;outline-offset:3px}
   if(score>best){best=score;try{localStorage.setItem(storageKey,String(best))}catch(e){}}
   update();const title=cleared?'試練の達成':'試練の終焉';
   const art=cleared?'assets/clear-god.png':'assets/gameover-god.png';
-  const text=cleared?'すべての雲は晴れた。見事、試練を越えた。':'此度の試練、しかと見届けた。';
+  const text=godSpeech(cleared?'clear':'over')+(cleared?'<br>'+(runDifficulty==='mild'?'天界は晴れた。代理は、静かに息をついた。':'天界は晴れた。神は、まだ遊び足りない。'):'');
   showDialog(title,`<img class="result-art" src="${art}" alt="${cleared?'微笑み、祝福を授ける神':'静かに試練を見届ける神'}"><span class="result-score">SCORE ${score.toLocaleString()}</span><br>${text}<br>プレイありがとうございました。<br><span class="result-caption">${gameMode==='puzzle'?'混沌の試練':'終わりなき試練'} ／ ${difficultyName(runDifficulty)} ／ Lv.${level} ／ ${lines}列<br>この端末のベスト：${best.toLocaleString()}</span>`,[
    {title:'同じ形式で再挑戦',primary:true,fn:start},
    {title:'スタートメニューへ',fn:showIntro},
@@ -456,6 +464,7 @@ input:focus-visible{outline:3px solid #2469b5;outline-offset:3px}
  ],'paused')}
  function pauseGame(){if(isPlaying())showPause()}
  function togglePause(){if(isPlaying())pauseGame();else if(phase==='paused')resume()}
+ $('difficulty').addEventListener('change',()=>{if(phase==='intro')$('modalBody').innerHTML=introBody()});
  $('pause').addEventListener('click',togglePause);
 
  $('rageTest').addEventListener('click',()=>{if(isPlaying())beginRage();else note('試練開始後に発動できる。')});
