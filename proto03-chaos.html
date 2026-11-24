@@ -29,6 +29,7 @@ input:focus-visible{outline:3px solid #2469b5;outline-offset:3px}
 #menuFields{text-align:left;margin:12px 0}#menuFields label{display:block;font-size:13px;font-weight:700;margin-top:10px}
 [hidden]{display:none!important}#settingsDock{display:none}#settingsHost .panel{box-shadow:none;border:0;padding:0;text-align:left}
 .god-speech{display:block;padding:10px 12px;margin:8px 0;border-left:3px solid #c5a05b;background:#fff8e9;color:#344e63;line-height:1.7;text-align:left}
+.god-art{display:block;width:100%;aspect-ratio:16/9;background-size:100% 300%;background-repeat:no-repeat;border-radius:12px;margin:8px 0}.god-unknown{display:grid;place-items:center;aspect-ratio:16/9;background:linear-gradient(#cdeaff,#fff6d8);border-radius:12px;font-size:1.3rem;color:#526c81}
 .result-art{display:block;width:100%;aspect-ratio:16/9;object-fit:cover;border-radius:12px;margin:8px 0}
 .result-score{font-size:22px;font-weight:800;color:#214267}.result-caption{font-size:12px}
 </style>
@@ -241,7 +242,17 @@ input:focus-visible{outline:3px solid #2469b5;outline-offset:3px}
   wild:{name:'主神',intro:'そなたの腕前、見せてもらおう。天を回せば、いっそう興が乗るであろう。',clear:'この試練さえ越えるか。見事である。次は、もう少し天を回すとしよう。',over:'少々、興が乗りすぎたか。案ずるな。雲なら、まだ幾らでもある。'}
  };
  function godSpeech(event,difficulty=runDifficulty){const god=godLines[difficulty];return god?god.name+'「'+god[event]+'」':'神託を待て。此度の試練を司る者は、まだ定まらぬ。'}
- function introBody(){return '<img class="result-art" src="assets/clear-god.png" alt="雲上から試練へ迎える神"><span class="god-speech">'+godSpeech('intro',$('difficulty').value)+'</span><br>試練の形式と難易度を選べ。<br>終わりなき試練：己の限界に挑め。<br>混沌の試練：乱れし雲を払い、天界に静寂を取り戻せ。'}
+ function godKind(difficulty=runDifficulty){return difficulty==='mild'?'proxy':difficulty==='random'?'unknown':'chief'}
+ function godArt(scene,difficulty=runDifficulty){
+  const kind=godKind(difficulty);
+  if(kind==='unknown')return '<span class="god-unknown" role="img" aria-label="担当する神は試練開始時に定まる">神託を待て</span>';
+  const position={intro:0,clear:50,over:100}[scene];
+  const name=kind==='proxy'?'人のよい神の代理':'威厳と遊び心を備えた主神';
+  return '<span class="god-art" role="img" aria-label="'+name+'：'+({intro:'出迎え',clear:'試練の達成',over:'試練の終焉'}[scene])+'" style="background-image:url(assets/'+kind+'-god-scenes.png);background-position:center '+position+'%"></span>';
+ }
+ const godPortraits={};
+ for(const kind of ['proxy','chief']){const portrait=new Image();portrait.src='assets/'+kind+'-god-scenes.png';godPortraits[kind]=portrait}
+ function introBody(){return godArt('intro',$('difficulty').value)+'<span class="god-speech">'+godSpeech('intro',$('difficulty').value)+'</span><br>試練の形式と難易度を選べ。<br>終わりなき試練：己の限界に挑め。<br>混沌の試練：乱れし雲を払い、天界に静寂を取り戻せ。'}
  function showIntro(){
   stopBgm(true);
   showDialog('神のお告げ',introBody(),[
@@ -256,9 +267,9 @@ input:focus-visible{outline:3px solid #2469b5;outline-offset:3px}
   piece=null;clearFx=null;soft=false;
   if(score>best){best=score;try{localStorage.setItem(storageKey,String(best))}catch(e){}}
   update();const title=cleared?'試練の達成':'試練の終焉';
-  const art=cleared?'assets/clear-god.png':'assets/gameover-god.png';
+  const art=godArt(cleared?'clear':'over');
   const text=godSpeech(cleared?'clear':'over')+(cleared?'<br>'+(runDifficulty==='mild'?'天界は晴れた。代理は、静かに息をついた。':'天界は晴れた。神は、まだ遊び足りない。'):'');
-  showDialog(title,`<img class="result-art" src="${art}" alt="${cleared?'微笑み、祝福を授ける神':'静かに試練を見届ける神'}"><span class="result-score">SCORE ${score.toLocaleString()}</span><br>${text}<br>プレイありがとうございました。<br><span class="result-caption">${gameMode==='puzzle'?'混沌の試練':'終わりなき試練'} ／ ${difficultyName(runDifficulty)} ／ Lv.${level} ／ ${lines}列<br>この端末のベスト：${best.toLocaleString()}</span>`,[
+  showDialog(title,`${art}<span class="result-score">SCORE ${score.toLocaleString()}</span><br>${text}<br>プレイありがとうございました。<br><span class="result-caption">${gameMode==='puzzle'?'混沌の試練':'終わりなき試練'} ／ ${difficultyName(runDifficulty)} ／ Lv.${level} ／ ${lines}列<br>この端末のベスト：${best.toLocaleString()}</span>`,[
    {title:'同じ形式で再挑戦',primary:true,fn:start},
    {title:'スタートメニューへ',fn:showIntro},
    {title:'終曲を再び聴く',fn:()=>{stopBgm(true);activateAudio();syncBgm()}}
@@ -352,44 +363,23 @@ input:focus-visible{outline:3px solid #2469b5;outline-offset:3px}
 
  // A middle-aged cloud keeper. All coordinates remain in the rotating world.
  function drawCloudKeeper(){
-  const rage=omenState==='rage',oracle=omenState==='active',release=Math.sin((1-godReleaseMs/650)*Math.PI);
-  const spread=godReleaseMs>0?release*9:0,glow=rage?'#ef9b59':'#ffe7a0';
-  ctx.save();ctx.translate(187,30);ctx.lineCap='round';ctx.lineJoin='round';
-  const ellipse=(x,y,rx,ry,fill,stroke=null)=>{ctx.beginPath();ctx.ellipse(x,y,rx,ry,0,0,Math.PI*2);ctx.fillStyle=fill;ctx.fill();if(stroke){ctx.strokeStyle=stroke;ctx.lineWidth=1.3;ctx.stroke()}};
-  const path=(points,fill,stroke='#40556b')=>{ctx.beginPath();points.forEach(([x,y],i)=>i?ctx.lineTo(x,y):ctx.moveTo(x,y));ctx.closePath();ctx.fillStyle=fill;ctx.fill();if(stroke){ctx.strokeStyle=stroke;ctx.lineWidth=1.4;ctx.stroke()}};
-  // Gold nimbus, broad shoulders and a white robe with a blue mantle.
-  ctx.strokeStyle=glow;ctx.lineWidth=rage?3:2;ctx.beginPath();ctx.ellipse(0,-17,23,4,0,0,Math.PI*2);ctx.stroke();
-  path([[-12,12],[-27,18],[-31,34],[31,34],[27,18],[12,12]],'#edf8ff');
-  path([[-12,12],[-27,18],[-29,32],[-8,30],[5,17]],'#58779a');
-  path([[12,12],[26,18],[29,32],[12,29],[3,17]],'#7a9bb8');
-  ctx.strokeStyle='#ddba67';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(-10,15);ctx.lineTo(4,32);ctx.moveTo(12,15);ctx.lineTo(3,32);ctx.stroke();
-  ellipse(0,16,7,5,'#c99473');
-  // Dark hair with silver temples: a mature man, not an elderly white-bearded god.
-  ellipse(0,-3,18,19,'#41434b','#354759');
-  ellipse(-15,0,4,6,'#d7a786');ellipse(15,0,4,6,'#d7a786');
-  ellipse(0,-1,14,16,rage?'#e0a17c':'#e5b795','#5c514d');
-  path([[-16,-7],[-13,-16],[-4,-20],[6,-19],[15,-13],[16,-7],[8,-11],[2,-13],[-5,-10]],'#45464c',null);
-  ctx.strokeStyle='#a5a6a5';ctx.lineWidth=2.5;ctx.beginPath();ctx.moveTo(-14,-10);ctx.lineTo(-13,-3);ctx.moveTo(14,-10);ctx.lineTo(13,-3);ctx.stroke();
-  // Heavy brows, narrow eyes, nose and a neatly kept full beard.
-  ctx.strokeStyle='#393d47';ctx.lineWidth=2.4;ctx.beginPath();
-  ctx.moveTo(-10,rage?-6:-4);ctx.lineTo(-3,rage?-2:-5);ctx.moveTo(3,rage?-2:-5);ctx.lineTo(10,rage?-6:-4);ctx.stroke();
-  ellipse(-6,0,2,1.4,oracle?'#b07b24':'#273a4c');ellipse(6,0,2,1.4,oracle?'#b07b24':'#273a4c');
-  ctx.strokeStyle='#ae7a61';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(0,0);ctx.lineTo(-1,6);ctx.lineTo(2,6);ctx.stroke();
-  path([[-14,4],[-10,8],[-5,7],[0,9],[5,7],[10,8],[14,4],[12,15],[6,21],[0,23],[-6,21],[-12,15]],'#45464b','#394754');
-  ctx.strokeStyle='#b7b3a9';ctx.lineWidth=1.1;ctx.beginPath();ctx.moveTo(-10,11);ctx.lineTo(-7,17);ctx.moveTo(9,11);ctx.lineTo(6,17);ctx.moveTo(0,16);ctx.lineTo(0,20);ctx.stroke();
-  ctx.strokeStyle='#d3a284';ctx.lineWidth=1.2;ctx.beginPath();ctx.moveTo(-4,12);ctx.lineTo(4,12);ctx.stroke();
-  // Hands open on every spawn, releasing the cloud toward the entrance.
-  for(const side of [-1,1]){
-   const x=side*(29+spread),y=27+spread*.25;
-   ellipse(x-side*5,y-2,10,6,'#f4fbff','#6687a4');
-   ellipse(x,y,7,4,'#e5b795','#896b57');
-   ctx.strokeStyle='#b88a6a';ctx.lineWidth=.7;ctx.beginPath();ctx.moveTo(x-3,y+1);ctx.lineTo(x+3,y+1);ctx.stroke();
+  const difficulty=phase==='intro'||(phase==='settings'&&settingsBack==='intro')?$('difficulty').value:runDifficulty;
+  const kind=godKind(difficulty),portrait=godPortraits[kind];
+  const release=godReleaseMs>0?Math.sin((1-godReleaseMs/650)*Math.PI):0;
+  ctx.save();
+  if(portrait&&portrait.complete&&portrait.naturalWidth){
+   // The same painted character appears at the cloud entrance, never the other god.
+   const sw=portrait.naturalWidth,sh=portrait.naturalHeight/3;
+   ctx.drawImage(portrait,sw*.20,0,sw*.60,sh,149,1+release*2,76,63);
+  }else{
+   ctx.fillStyle='#fff3c7';ctx.font='bold 12px system-ui';ctx.textAlign='center';
+   ctx.fillText(kind==='unknown'?'神託を待て':kind==='proxy'?'神の代理':'主神',187,37);
   }
-  if(godReleaseMs>0||phase==='intro'){
-   ctx.globalAlpha=phase==='intro'?.9:Math.min(1,godReleaseMs/250);
-   const y=31+spread*.25;
-   ellipse(-10,y,11,4,'#ffffff');ellipse(1,y-2,13,5,'#ffffff');ellipse(12,y,10,4,'#ffffff');
-   ctx.globalAlpha=1;
+  if(godReleaseMs>0){
+   ctx.globalAlpha=Math.min(1,godReleaseMs/250);ctx.fillStyle='#fff';
+   for(const [x,y,r] of [[175,59,8],[187,57,10],[199,59,8]]){
+    ctx.beginPath();ctx.ellipse(x,y+release*7,r,4,0,0,Math.PI*2);ctx.fill();
+   }
   }
   ctx.restore();
  }

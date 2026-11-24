@@ -20,9 +20,9 @@ const window=new Element(),saved=new Map(),audioNodes=[];
 function param(){return {value:0,cancelScheduledValues(){},setTargetAtTime(v){this.value=v},setValueAtTime(v){this.value=v},exponentialRampToValueAtTime(){},linearRampToValueAtTime(){}}}
 function node(){const n={gain:param(),frequency:param(),threshold:param(),knee:param(),ratio:param(),attack:param(),release:param(),connect(){},disconnect(){},start(){},stop(){}};audioNodes.push(n);return n}
 window.AudioContext=class{constructor(){this.state='running';this.currentTime=0;this.sampleRate=44100;this.destination=node()}resume(){return Promise.resolve()}createGain(){return node()}createDynamicsCompressor(){return node()}createWaveShaper(){return node()}createOscillator(){return node()}createBiquadFilter(){return node()}createBufferSource(){return node()}createBuffer(c,n,rate=44100){const data=new Float32Array(n);return{duration:n/rate,sampleRate:rate,getChannelData:()=>data}}};
-const context={Math,window,document,localStorage:{getItem:k=>saved.get(k),setItem:(k,v)=>saved.set(k,v)},performance:{now:()=>1000},requestAnimationFrame(){},setTimeout,clearTimeout,setInterval,clearInterval,console};
+const context={Image:class{constructor(){this.complete=false;this.naturalWidth=0}},Math,window,document,localStorage:{getItem:k=>saved.get(k),setItem:(k,v)=>saved.set(k,v)},performance:{now:()=>1000},requestAnimationFrame(){},setTimeout,clearTimeout,setInterval,clearInterval,console};
 let script=html.match(/<script>([\s\S]*?)<\/script>/)[1];
-script=script.replace('window.__kamiTest={','window.__qa={showIntro,openSettings,clearGame,godSpeech,randomPiece,setupPuzzle,setBoard(b){board=b},placeX(x){piece.x=x},fillTop(){board[0].fill(0)},drawCloudKeeper,makeCue,syncBgm,bgm:()=>({bgmVolume,bgmMuted,bgmSource,bgmBuffer,bgmBus,bgmOffset,audioCtx,musicKind,bgmFinished}),sceneOffset,sceneScale,draw,finalizeLockProgress,setScore(v){score=v},levelChoice,endGame,tickClear,setupClear(){board=empty();board[15].fill(0);score=490;beginClear([15],100,1,false)},audio:()=>({seVolume,seMuted,masterGain}),soft:()=>soft};window.__kamiTest={');
+script=script.replace('window.__kamiTest={','window.__qa={showIntro,openSettings,clearGame,godSpeech,godArt,godKind,randomPiece,setupPuzzle,setBoard(b){board=b},placeX(x){piece.x=x},fillTop(){board[0].fill(0)},drawCloudKeeper,makeCue,syncBgm,bgm:()=>({bgmVolume,bgmMuted,bgmSource,bgmBuffer,bgmBus,bgmOffset,audioCtx,musicKind,bgmFinished}),sceneOffset,sceneScale,draw,finalizeLockProgress,setScore(v){score=v},levelChoice,endGame,tickClear,setupClear(){board=empty();board[15].fill(0);score=490;beginClear([15],100,1,false)},audio:()=>({seVolume,seMuted,masterGain}),soft:()=>soft};window.__kamiTest={');
 vm.runInNewContext(script,context);
 const state=()=>window.__kamiTest.getState(),qa=window.__qa;
 function key(code,repeat=false){window.emit('keydown',{code,repeat,target:document.activeElement||els.game})}
@@ -41,7 +41,7 @@ press('Enter');assert.equal(state().phase,'playing');
 press('KeyP');press('Digit2');assert.equal(state().phase,'settings');
 press('Escape');assert.equal(state().phase,'paused');press('Digit1');assert.equal(state().phase,'playing');
 qa.setScore(6000);qa.finalizeLockProgress(false);assert.notEqual(state().phase,'clear');
-qa.endGame();assert.equal(state().phase,'over');assert.match(els.modalBody.innerHTML,/gameover-god.png/);assert.match(els.modalBody.innerHTML,/プレイありがとうございました/);
+qa.endGame();assert.equal(state().phase,'over');assert.match(els.modalBody.innerHTML,/god-scenes.png/);assert.match(els.modalBody.innerHTML,/プレイありがとうございました/);
 press('Digit2');assert.equal(state().phase,'intro');
 const seen=new Set();
 for(let i=0;i<40;i++){
@@ -67,9 +67,9 @@ for(const difficulty of ['mild','normal','wild']){
  // Verify the actual final line-clear path, not a direct result-screen call.
  qa.setBoard(Array.from({length:16},()=>Array(10).fill(-1)));
  qa.setupClear();qa.tickClear(500);assert.equal(state().phase,'clear');
- assert.match(els.modalBody.innerHTML,/clear-god.png/);
+ assert.match(els.modalBody.innerHTML,/god-scenes.png/);
  assert.equal(state().piece,null);press('Digit2');
- assert.match(els.modalBody.innerHTML,/clear-god.png/);
+ assert.match(els.modalBody.innerHTML,/god-scenes.png/);
 }
 els.gameMode.value='puzzle';press('Digit1');qa.fillTop();window.__kamiTest.hardDrop();assert.equal(state().phase,'over');
 qa.showIntro();els.gameMode.value='endless';els.difficulty.value='normal';press('Digit1');assert.ok(state().board.every(r=>r.every(c=>c===-1)));
@@ -89,3 +89,15 @@ assert.match(els.modalBody.innerHTML,/まだ定まらぬ/);
 press('Digit1');const selected=state().runDifficulty;
 qa.endGame();assert.ok(els.modalBody.innerHTML.includes(qa.godSpeech('over',selected)));
 console.log('PASS: entrance change, proxy/main dialogue, clear/over, resolved random speaker');
+
+assert.match(qa.godArt('intro','mild'),/proxy-god-scenes/);
+assert.match(qa.godArt('clear','normal'),/chief-god-scenes/);
+assert.match(qa.godArt('over','wild'),/center 100%/);
+assert.doesNotMatch(qa.godArt('intro','random'),/god-scenes/);
+for(const difficulty of ['mild','normal','wild']){
+ qa.showIntro();els.difficulty.value=difficulty;els.difficulty.emit('change');
+ assert.match(els.modalBody.innerHTML,new RegExp(qa.godKind(difficulty)+'-god-scenes'));
+ press('Digit1');qa.drawCloudKeeper();qa.endGame();
+ assert.match(els.modalBody.innerHTML,new RegExp(qa.godKind(difficulty)+'-god-scenes'));
+}
+console.log('PASS: character and scene art routing, random concealment, keeper fallback');
